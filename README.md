@@ -43,12 +43,11 @@ To add custom elixirs, follow these steps:
 1. Open the `elixrs.yml` file located in the plugin's folder.
 2. Under the `elixirs` section, add a new entry for your elixir using the following format:
 
-`elixirName:
+ElixirName:
   name: "Elixir Name"
   effects:
-    - "Effect 1"
-    - "Effect 2"
-    ...`
+  - "Speed 3"
+  - "Jump Boost 6"
 
 Replace `elixirName` with a unique identifier for your elixir, `"Elixir Name"` with the desired display name of the elixir, and `"Effect 1"`, `"Effect 2"`, etc. with the desired potion effects of the elixir.
 3. Save the `elixrs.yml` file.
