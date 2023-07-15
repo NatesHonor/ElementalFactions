@@ -1,0 +1,23 @@
+name: Factions
+version: 3.5.4
+main: com.nate.elemental.Factions
+author: NatesHonor
+website: https://inate.xyz
+description: A Factions plugin Designed for Elemental Legacy
+api-version: 1.17
+commands:
+  f:
+    description: Default factions command
+    usage: /boss
+  horse: 
+    description: Opens the Horse GUI
+    usage: /horse
+  raidshop:
+    description: Opens the Raid Shop
+    usage: /raidshop
+  spawnershop:
+    description: Opens the Spawner Shop
+    usage: /spawnershop
+  debug-h2:
+    description: Debug an h2 Table
+    usage: /debug-h2 table
