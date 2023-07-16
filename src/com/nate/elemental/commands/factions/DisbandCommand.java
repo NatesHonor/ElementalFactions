@@ -44,7 +44,7 @@ public class DisbandCommand implements CommandExecutor {
 
         if (args.length > 1 && args[1].equalsIgnoreCase("confirm")) {
             database.disbandFaction(factionName);
-            database.updateusersFactionNoLeader(playerName, factionName);
+            database.updateusersFactionNoLeader(playerName, "wilderness");
 
             String message = ChatColor.RED + "The faction " + ChatColor.YELLOW + factionName + ChatColor.RED + " has been disbanded.";
             Bukkit.broadcastMessage(message);

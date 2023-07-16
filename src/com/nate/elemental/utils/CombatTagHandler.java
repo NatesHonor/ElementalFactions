@@ -6,104 +6,132 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.SkullMeta;
 
-import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
 
 public class CombatTagHandler implements Listener {
-    private final Factions plugin;
-    private final Database database;
     private final Map<UUID, Long> combatCooldowns;
     private final Map<UUID, Villager> combatLoggers;
 
-    public CombatTagHandler(Factions plugin, Database database) {
-        this.plugin = plugin;
-        this.database = database;
+    public CombatTagHandler() {
         this.combatCooldowns = new HashMap<>();
         this.combatLoggers = new HashMap<>();
     }
 
-    @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player)) {
-            return;
-        }
+    private void spawnCombatLogger(Player player) {
+        Location location = player.getLocation();
+        Villager loggerVillager = (Villager) location.getWorld().spawnEntity(location, EntityType.VILLAGER);
+        loggerVillager.setCustomName(player.getName());
+        loggerVillager.setCustomNameVisible(true);
 
-        Player damagedPlayer = (Player) event.getEntity();
-        Player attackingPlayer = (Player) event.getDamager();
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack[] playerInventoryContents = playerInventory.getContents();
+        ItemStack[] playerArmorContents = playerInventory.getArmorContents();
 
-        String damagedPlayerFaction = database.getUserFactionName(damagedPlayer.getName());
-        String attackingPlayerFaction = database.getUserFactionName(attackingPlayer.getName());
+        ItemStack villagerSkull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) villagerSkull.getItemMeta();
+        skullMeta.setOwningPlayer(player);
+        skullMeta.setDisplayName(player.getName());
+        villagerSkull.setItemMeta(skullMeta);
 
-        if (damagedPlayerFaction != null && damagedPlayerFaction.equals(attackingPlayerFaction)) {
-            event.setCancelled(true);
-            attackingPlayer.sendMessage(ChatColor.RED + "You can't hurt a faction member");
-            return;
-        }
+        loggerVillager.getInventory().setContents(playerInventoryContents);
+        loggerVillager.getEquipment().setArmorContents(playerArmorContents);
 
-        combatCooldowns.put(damagedPlayer.getUniqueId(), System.currentTimeMillis() + 10000);
+        playerInventory.clear();
+        playerInventory.setArmorContents(null);
 
-        Villager loggerVillager = spawnCombatLogger(damagedPlayer);
-        combatLoggers.put(damagedPlayer.getUniqueId(), loggerVillager);
+        combatLoggers.put(player.getUniqueId(), loggerVillager);
+    }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                combatLoggers.remove(damagedPlayer.getUniqueId());
-                loggerVillager.remove();
-            }
-        }.runTaskLater(plugin, 200);
+    @SuppressWarnings("unused")
+	private void restorePlayerInventory(Player player, Villager villager) {
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack[] villagerInventoryContents = villager.getInventory().getContents();
+        ItemStack[] villagerArmorContents = villager.getEquipment().getArmorContents();
 
-        damagedPlayer.sendMessage(ChatColor.RED + "You are in combat! You cannot use /f home or /f warp.");
-        damagedPlayer.sendMessage(ChatColor.RED + "If you log out, a villager with your name will appear.");
-        damagedPlayer.sendMessage(ChatColor.RED + "Do not kill the villager or you will lose your items!");
+        playerInventory.setContents(villagerInventoryContents);
+        playerInventory.setArmorContents(villagerArmorContents);
+
+        villager.remove();
+
+        combatLoggers.remove(player.getUniqueId());
+    }
+
+    private void broadcastCombatLogMessage(String playerName) {
+        Bukkit.broadcastMessage(ChatColor.YELLOW + playerName + " logged out while in combat!");
+    }
+
+    private boolean isInSameFaction(Player player1, Player player2) {
+        String faction1 = getFactionName(player1);
+        String faction2 = getFactionName(player2);
+
+        return faction1.equals(faction2) && !faction1.equals("wilderness");
+    }
+
+    private String getFactionName(Player player) {
+        String playerName = player.getName();
+        Database database = new Database();
+        return database.getUserFactionName(playerName);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
 
-        if (combatCooldowns.containsKey(player.getUniqueId())) {
-            broadcastCombatLogMessage(player.getName());
-            
-            player.getInventory().clear();
+        if (combatCooldowns.containsKey(playerUUID)) {
+            long currentTime = System.currentTimeMillis();
+            long logoutTime = combatCooldowns.get(playerUUID);
+
+            if (currentTime - logoutTime >= 10000) {
+                combatCooldowns.remove(playerUUID);
+                spawnCombatLogger(player);
+                broadcastCombatLogMessage(player.getName());
+            }
         }
     }
 
-    private Villager spawnCombatLogger(Player player) {
-        Villager villager = (Villager) player.getWorld().spawnEntity(player.getLocation(), EntityType.VILLAGER);
-        villager.setCustomName(player.getName());
-        villager.setCustomNameVisible(true);
-        villager.setAI(false);
-        villager.setInvulnerable(true);
-        villager.setCollidable(false);
+    @EventHandler
+    public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
+            Player attackedPlayer = (Player) event.getEntity();
+            Player attackingPlayer = (Player) event.getDamager();
 
-        ItemStack[] playerInventoryContents = player.getInventory().getContents();
-        ItemStack[] playerArmorContents = player.getInventory().getArmorContents();
-
-        villager.getInventory().setContents(playerInventoryContents);
-        villager.getEquipment().setHelmet(playerArmorContents[3]);
-        villager.getEquipment().setChestplate(playerArmorContents[2]);
-        villager.getEquipment().setLeggings(playerArmorContents[1]);
-        villager.getEquipment().setBoots(playerArmorContents[0]);
-
-        player.getInventory().clear();
-
-        return villager;
+            if (!isInSameFaction(attackedPlayer, attackingPlayer)) {
+                UUID attackedUUID = attackedPlayer.getUniqueId();
+                combatCooldowns.put(attackedUUID, System.currentTimeMillis());
+                attackedPlayer.sendMessage(ChatColor.RED + "You are now combat tagged!");
+            }
+        }
     }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        UUID playerUUID = player.getUniqueId();
 
+        if (combatCooldowns.containsKey(playerUUID)) {
+            long currentTime = System.currentTimeMillis();
+            long logoutTime = combatCooldowns.get(playerUUID);
 
-    private void broadcastCombatLogMessage(String playerName) {
-        Bukkit.broadcastMessage(ChatColor.YELLOW + playerName + " logged out while in combat!");
+            if (currentTime - logoutTime >= 10000) {
+                combatCooldowns.remove(playerUUID);
+                spawnCombatLogger(player);
+                broadcastCombatLogMessage(player.getName());
+            }
+        }
     }
 }

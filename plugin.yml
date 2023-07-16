@@ -1,5 +1,5 @@
-name: Factions
-version: 3.5.4
+name: ElementalFactions
+version: 3.6.0
 main: com.nate.elemental.Factions
 author: NatesHonor
 website: https://inate.xyz
@@ -12,6 +12,9 @@ commands:
   horse: 
     description: Opens the Horse GUI
     usage: /horse
+  elixir:
+    description: Opens the elixir shop
+    usage: /elixir
   raidshop:
     description: Opens the Raid Shop
     usage: /raidshop

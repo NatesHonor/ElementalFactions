@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
 
+import java.util.StringJoiner;
+
 public class ShowCommand implements CommandExecutor {
     Database database = new Database();
 
@@ -37,7 +39,6 @@ public class ShowCommand implements CommandExecutor {
 
         player.sendMessage(ChatColor.GREEN + "Faction Details: " + factionName);
         player.sendMessage(ChatColor.YELLOW + "User Data:");
-
 
         String description = database.getFactionDescription(factionName);
         boolean isInviteOnly = database.isFactionInviteOnly(factionName);
@@ -68,6 +69,8 @@ public class ShowCommand implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "Spawners: " + spawners);
         player.sendMessage(ChatColor.YELLOW + "Allies: " + allies + "/∞");
         player.sendMessage(ChatColor.YELLOW + "Online: " + onlineMembers + "/" + totalMembers);
+
+        StringJoiner onlinePlayersJoiner = new StringJoiner(", ");
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             String playerName = onlinePlayer.getName();
             String playerRank = database.getUserRank(playerName);
@@ -83,11 +86,12 @@ public class ShowCommand implements CommandExecutor {
                 }
 
                 onlineUserString.append(playerName);
-
-                player.sendMessage(onlineUserString.toString());
+                onlinePlayersJoiner.add(onlineUserString.toString());
             }
         }
+
+        player.sendMessage(ChatColor.YELLOW + "Players: " + onlinePlayersJoiner.toString());
+
         return true;
     }
-
 }

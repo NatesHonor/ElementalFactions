@@ -1,6 +1,5 @@
 package com.nate.elemental;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -26,11 +25,13 @@ import com.nate.elemental.commands.factions.ListFactions;
 import com.nate.elemental.commands.factions.MapCommand;
 import com.nate.elemental.commands.factions.PromoteCommand;
 import com.nate.elemental.commands.factions.ShowCommand;
+import com.nate.elemental.commands.shops.ElixirCommand;
 import com.nate.elemental.commands.shops.HorseCommand;
 import com.nate.elemental.commands.shops.RaidShopCommand;
 import com.nate.elemental.commands.shops.SpawnerShopCommand;
 import com.nate.elemental.items.FireballItem;
 import com.nate.elemental.utils.CombatTagHandler;
+import com.nate.elemental.utils.PearlCooldownHandler;
 import com.nate.elemental.utils.shops.spawner.SpawnerBreakListener;
 import com.nate.elemental.utils.shops.spawner.SpawnerPlaceListener;
 import com.nate.elemental.utils.storage.h2.Database;
@@ -47,20 +48,17 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         return instance;
     }
     
-    @SuppressWarnings("unused")
 	@Override
     public void onEnable() {
-    	boolean usePackets = false;
     	instance = this;
 
         this.saveDefaultConfig();
         
         url = "jdbc:h2:" + getDataFolder().getAbsolutePath() + "\\Factions";
         
-        Connection connection = null;
         try {
             Class.forName("org.h2.Driver");
-            connection = DriverManager.getConnection(url);
+            DriverManager.getConnection(url);
 
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
@@ -70,35 +68,39 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             getLogger().warning("Vault dependency not found. Economy integration disabled.");
         }
         
-        	Database database = new Database();
+        	new Database();
  
             Database.createTables();
             
             boolean canFireballExplode = true;
 
             HorseCommand horseCommand = new HorseCommand();
+            ElixirCommand elixirCommand = new ElixirCommand(this);
             ClaimCommand claimCommand = new ClaimCommand(this);
             RaidShopCommand raidShopCommand = new RaidShopCommand(this);
             SpawnerShopCommand spawnerShopCommand = new SpawnerShopCommand(this);
-            SpawnerBreakListener spawnerBreakListener = new SpawnerBreakListener();
             SpawnerPlaceListener spawnerPlaceListener = new SpawnerPlaceListener();
-            CombatTagHandler combatTagHandler = new CombatTagHandler(this, database);
             FireballItem fireballItem = new FireballItem(this, canFireballExplode);
-            
+            CombatTagHandler combatTagHandler = new CombatTagHandler();
+            PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler(this);
+
             getCommand("f").setExecutor(this);
-            getCommand("horse").setExecutor(new HorseCommand());
-            getCommand("raidshop").setExecutor(new RaidShopCommand(this));
-            getCommand("spawnershop").setExecutor(new SpawnerShopCommand(this));
+            getCommand("horse").setExecutor(horseCommand);
+            getCommand("elixir").setExecutor(elixirCommand);
             getCommand("debug-h2").setExecutor(new Debug());
+            getCommand("raidshop").setExecutor(raidShopCommand);
+            getCommand("spawnershop").setExecutor(spawnerShopCommand);
             
     		getServer().getPluginManager().registerEvents(this, this);
             getServer().getPluginManager().registerEvents(fireballItem, this);
+    		getServer().getPluginManager().registerEvents(claimCommand, this);
+    		getServer().getPluginManager().registerEvents(horseCommand, this);
             getServer().getPluginManager().registerEvents(raidShopCommand, this);
+    		getServer().getPluginManager().registerEvents(combatTagHandler, this);
             getServer().getPluginManager().registerEvents(spawnerShopCommand, this);
     		getServer().getPluginManager().registerEvents(spawnerPlaceListener, this);
-    		getServer().getPluginManager().registerEvents(claimCommand, this);
-    		getServer().getPluginManager().registerEvents(combatTagHandler, this);
-    		getServer().getPluginManager().registerEvents(horseCommand, this);
+    		getServer().getPluginManager().registerEvents(pearlCooldownHandler, this);
+    		getServer().getPluginManager().registerEvents(elixirCommand, this);
     }
 
     @Override
