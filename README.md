@@ -24,6 +24,9 @@ Elemental Factions is a plugin for Bukkit/Spigot servers that introduces faction
 - `/f info [factionName]`: Displays information about a faction.
 - `/f kick <playerName>`: Kicks a player from your faction.
 - `/f disband`: Disbands your faction (only available for faction leaders).
+- `/f ally <factionName>`: Sends an alliance request to another faction.
+- `/f ally accept <factionName>`: Accepts an alliance request from another faction.
+- `/f enemy <factionName>`: Declares another faction as an enemy.
 - `/raidshop`: Opens the raid shop GUI where players can purchase raid-related items.
 - `/spawnershop`: Opens the spawner shop GUI where players can purchase spawners.
 - `/elixir`: Opens the elixir selection GUI where players can obtain custom elixirs.
@@ -34,7 +37,7 @@ Elemental Factions is a plugin for Bukkit/Spigot servers that introduces faction
 1. Install the Elemental Factions plugin on your Bukkit/Spigot server.
 2. Start the server to generate the necessary configuration files and database.
 3. Use the provided commands to create factions, invite players, claim territory, and engage in faction gameplay.
-4. Players can accept faction invitations, participate in PvP battles, and contribute to their faction's success.
+4. Players can accept faction invitations, participate in PvP battles, form alliances, declare enemies, and contribute to their faction's success.
 5. Explore the features and gameplay possibilities offered by Elemental Factions.
 
 ### Adding Custom Elixirs
@@ -44,11 +47,13 @@ To add custom elixirs, follow these steps:
 1. Open the `elixirs.yml` file located in the plugin's folder.
 2. Under the `elixirs` section, add a new entry for your elixir using the following format:
 
+
 ElixirName:
 name: "Elixir Name"
 effects:
 
     "Effect:Duration:Level"
+
 
 
 Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` with the desired display name of the elixir, and `"Effect:Duration:Level"` with the desired potion effect, duration, and level. For example, `"Speed:600:3"` adds a Speed effect with a duration of 600 ticks and level 3.
@@ -57,43 +62,54 @@ Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` w
 5. Players can now find the custom elixir in the elixir selection GUI (`/elixir`) and obtain it by clicking on it.
 
 ### List of effects:
-PEED
-SLOW
-FAST_DIGGING
-SLOW_DIGGING
-INCREASE_DAMAGE
-HEAL
-HARM
-JUMP
-CONFUSION
-REGENERATION
-DAMAGE_RESISTANCE
-FIRE_RESISTANCE
-WATER_BREATHING
-INVISIBILITY
-BLINDNESS
-NIGHT_VISION
-HUNGER
-WEAKNESS
-POISON
-WITHER
-HEALTH_BOOST
-ABSORPTION
-SATURATION
-GLOWING
-LEVITATION
-LUCK
-UNLUCK
-SLOW_FALLING
-CONDUIT_POWER
-DOLPHINS_GRACE
-BAD_OMEN
-HERO_OF_THE_VILLAGE
-DARKNESS
+
+- SPEED
+- SLOW
+- FAST_DIGGING
+- SLOW_DIGGING
+- INCREASE_DAMAGE
+- HEAL
+- HARM
+- JUMP
+- CONFUSION
+- REGENERATION
+- DAMAGE_RESISTANCE
+- FIRE_RESISTANCE
+- WATER_BREATHING
+- INVISIBILITY
+- BLINDNESS
+- NIGHT_VISION
+- HUNGER
+- WEAKNESS
+- POISON
+- WITHER
+- HEALTH_BOOST
+- ABSORPTION
+- SATURATION
+- GLOWING
+- LEVITATION
+- LUCK
+- UNLUCK
+- SLOW_FALLING
+- CONDUIT_POWER
+- DOLPHINS_GRACE
+- BAD_OMEN
+- HERO_OF_THE_VILLAGE
+- DARKNESS
 
 ### Spawning a Horse with Upgraded Speed
 
-To spawn a horse with upgraded speed, use the `/horse` command. When executed, a horse with increased speed will be spawned at your location.
+To spawn a horse with upgraded speed, use the `/horse` command. When executed, a horse with increased speed will be spawned at your location. Please note that the horse can only be spawned once every 5 minutes.
+
+## Changelog
+
+- Added `/f ally <factionName>` command to send an alliance request to another faction.
+- Added `/f ally accept <factionName>` command to accept an alliance request from another faction.
+- Added `/f enemy <factionName>` command to declare another faction as an enemy.
+- Added a timer of 5 minutes before a raid horse can be spawned again.
+- Updated the `show` command to display allies with their faction names and count.
+- Fixed issues with ally invitation and acceptance functionality.
+- General bug fixes and improvements.
 
 ## Contributing
 
@@ -102,3 +118,4 @@ Contributions to Elemental Factions are welcome! If you have any improvements, b
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
