@@ -27,6 +27,7 @@ Elemental Factions is a plugin for Bukkit/Spigot servers that introduces faction
 - `/raidshop`: Opens the raid shop GUI where players can purchase raid-related items.
 - `/spawnershop`: Opens the spawner shop GUI where players can purchase spawners.
 - `/elixir`: Opens the elixir selection GUI where players can obtain custom elixirs.
+- `/horse`: Spawns a horse with upgraded speed.
 
 ## How to Use
 
@@ -40,19 +41,24 @@ Elemental Factions is a plugin for Bukkit/Spigot servers that introduces faction
 
 To add custom elixirs, follow these steps:
 
-1. Open the `elixrs.yml` file located in the plugin's folder.
+1. Open the `elixirs.yml` file located in the plugin's folder.
 2. Under the `elixirs` section, add a new entry for your elixir using the following format:
 
 ElixirName:
-  name: "Elixir Name"
-  effects:
-  - "Speed 3"
-  - "Jump Boost 6"
+name: "Elixir Name"
+effects:
 
-Replace `elixirName` with a unique identifier for your elixir, `"Elixir Name"` with the desired display name of the elixir, and `"Effect 1"`, `"Effect 2"`, etc. with the desired potion effects of the elixir.
-3. Save the `elixrs.yml` file.
+    "Effect:Duration:Level"
+
+
+Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` with the desired display name of the elixir, and `"Effect:Duration:Level"` with the desired potion effect, duration, and level. For example, `"Speed:600:3"` adds a Speed effect with a duration of 600 ticks and level 3.
+3. Save the `elixirs.yml` file.
 4. Restart the server or reload the plugin for the changes to take effect.
 5. Players can now find the custom elixir in the elixir selection GUI (`/elixir`) and obtain it by clicking on it.
+
+### Spawning a Horse with Upgraded Speed
+
+To spawn a horse with upgraded speed, use the `/horse` command. When executed, a horse with increased speed will be spawned at your location.
 
 ## Contributing
 
@@ -61,4 +67,3 @@ Contributions to Elemental Factions are welcome! If you have any improvements, b
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
