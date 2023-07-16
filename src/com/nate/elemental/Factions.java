@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.nate.elemental.commands.data.h2.Debug;
 import com.nate.elemental.commands.factions.AcceptCommand;
+import com.nate.elemental.commands.factions.AllyCommand;
 import com.nate.elemental.commands.factions.ClaimCommand;
 import com.nate.elemental.commands.factions.CreateFactionCommand;
 import com.nate.elemental.commands.factions.DescCommand;
@@ -169,6 +170,14 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             } else if (args.length >= 1) {
                 String subCommand = args[0].toLowerCase();
                 switch (subCommand) {
+                    case "ally":
+                    	if (args.length >= 2) {
+                    		AllyCommand allyCommand = new AllyCommand();
+                    		allyCommand.onCommand(sender, command, label, args);
+                    	} else {
+                    		sender.sendMessage(ChatColor.RED + "Usage: /f ally <faction>");
+                    	}
+                    	break; 
                     case "create":
                         if (args.length >= 2) {
                             CreateFactionCommand createCommand = new CreateFactionCommand();
@@ -184,6 +193,8 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                     		DescCommand descCommand = new DescCommand();
                     		descCommand.onCommand(sender, command, label, args);
                     		return true;
+                    	} else {
+                    		sender.sendMessage(ChatColor.RED + "Usage: /f desc <description>");
                     	}
                     	break;
                     case "list":

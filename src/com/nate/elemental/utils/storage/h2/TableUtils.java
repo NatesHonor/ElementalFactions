@@ -45,6 +45,22 @@ public List<String> getTableNames() {
     return tableNames;
 }
 
+public int getFactionAlliesCount(String factionName) {
+    try (Connection connection = DatabaseConnection.getConnection(); Statement statement = connection.createStatement()) {
+        ResultSet resultSet = statement.executeQuery("SELECT allies FROM factions WHERE name = '" + factionName + "'");
+        if (resultSet.next()) {
+            String allies = resultSet.getString("allies");
+            if (allies != null) {
+                return allies.split(",").length;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0;
+}
+
+
 public List<String> getTableData(String tableName) {
     List<String> tableData = new ArrayList<>();
     try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {

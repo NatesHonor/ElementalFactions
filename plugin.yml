@@ -8,7 +8,13 @@ api-version: 1.17
 commands:
   f:
     description: Default factions command
-    usage: /boss
+    usage: /f help
+  f show:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
+  f create:
+    description: Creates a new faction
+    usage: /f create <faction>
   horse: 
     description: Opens the Horse GUI
     usage: /horse

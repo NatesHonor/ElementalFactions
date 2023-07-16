@@ -21,6 +21,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.FactionUtils;
 
 public class CombatTagHandler implements Listener {
     private final Map<UUID, Long> combatCooldowns;
@@ -110,13 +111,17 @@ public class CombatTagHandler implements Listener {
             Player attackedPlayer = (Player) event.getEntity();
             Player attackingPlayer = (Player) event.getDamager();
 
-            if (!isInSameFaction(attackedPlayer, attackingPlayer)) {
+            String attackedFaction = getFactionName(attackedPlayer);
+            String attackingFaction = getFactionName(attackingPlayer);
+
+            if (!isInSameFaction(attackedPlayer, attackingPlayer) || !FactionUtils.areFactionsAllied(attackingFaction, attackedFaction)) {
                 UUID attackedUUID = attackedPlayer.getUniqueId();
                 combatCooldowns.put(attackedUUID, System.currentTimeMillis());
                 attackedPlayer.sendMessage(ChatColor.RED + "You are now combat tagged!");
             }
         }
     }
+
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {

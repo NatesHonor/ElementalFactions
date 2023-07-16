@@ -438,21 +438,6 @@ public class Database {
         return 0;
     }
 
-    public int getFactionAlliesCount(String factionName) {
-        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT allies_count FROM factions WHERE name = '" + factionName + "'");
-            if (resultSet.next()) {
-                int alliesCount = resultSet.getInt("allies_count");
-                resultSet.close();
-                statement.close();
-                return alliesCount;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public boolean isChunkClaimed(String chunkKey) {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(
                 "SELECT COUNT(*) AS count FROM claimed_chunks WHERE chunk_key = ?")) {
@@ -534,23 +519,6 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-    
-    
-    
-    public static boolean factionExists(String name) {
-        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS count FROM factions WHERE name = '" + name + "'");
-            if (resultSet.next()) {
-                int count = resultSet.getInt("count");
-                resultSet.close();
-                statement.close();
-                return count > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
     
 

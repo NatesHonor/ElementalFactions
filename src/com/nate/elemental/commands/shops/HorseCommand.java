@@ -23,6 +23,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class HorseCommand implements CommandExecutor, Listener {
 
     private final Map<Player, Integer> speedUpgrades = new HashMap<>();
+    private final Map<Player, Long> spawnCooldowns = new HashMap<>();
+    private static final long COOLDOWN_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -79,6 +81,12 @@ public class HorseCommand implements CommandExecutor, Listener {
     }
 
     private void spawnHorse(Player player) {
+        if (isOnCooldown(player)) {
+            long remainingTime = getRemainingCooldown(player);
+            player.sendMessage(ChatColor.RED + "You can't spawn the horse again for " + (remainingTime / 1000) + " seconds.");
+            return;
+        }
+
         int speedUpgrades = this.speedUpgrades.getOrDefault(player, 0);
 
         Horse horse = (Horse) player.getWorld().spawnEntity(player.getLocation(), EntityType.HORSE);
@@ -95,7 +103,30 @@ public class HorseCommand implements CommandExecutor, Listener {
         horse.setOwner(player);
 
         player.sendMessage(ChatColor.GREEN + "You spawned Nate's WarHorse with upgraded speed: " + upgradedSpeed);
+
+        startCooldown(player);
     }
 
+    private boolean isOnCooldown(Player player) {
+        if (spawnCooldowns.containsKey(player)) {
+            long lastSpawnTime = spawnCooldowns.get(player);
+            long currentTime = System.currentTimeMillis();
+            long elapsedTime = currentTime - lastSpawnTime;
+            return elapsedTime < COOLDOWN_DURATION;
+        }
+        return false;
+    }
+
+    private void startCooldown(Player player) {
+        long currentTime = System.currentTimeMillis();
+        spawnCooldowns.put(player, currentTime);
+    }
+
+    private long getRemainingCooldown(Player player) {
+        long lastSpawnTime = spawnCooldowns.getOrDefault(player, 0L);
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - lastSpawnTime;
+        return COOLDOWN_DURATION - elapsedTime;
+    }
 
 }

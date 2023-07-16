@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.FactionsTable;
 
 public class CreateFactionCommand implements CommandExecutor {
 
@@ -28,7 +29,7 @@ public class CreateFactionCommand implements CommandExecutor {
 
             String factionName = args[1];
 
-            if (Database.factionExists(factionName)) {
+            if (FactionsTable.factionExists(factionName)) {
                 player.sendMessage("A faction with that name already exists.");
                 return true;
             }

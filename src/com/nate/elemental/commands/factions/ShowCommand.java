@@ -1,5 +1,7 @@
 package com.nate.elemental.commands.factions;
 
+import java.util.StringJoiner;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,15 +11,16 @@ import org.bukkit.entity.Player;
 
 import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
-
-import java.util.StringJoiner;
+import com.nate.elemental.utils.storage.h2.FactionUtils;
+import com.nate.elemental.utils.storage.h2.TableUtils;
 
 public class ShowCommand implements CommandExecutor {
     Database database = new Database();
-
+    TableUtils tableUtils = new TableUtils();
+    
     @SuppressWarnings("unused")
     private Factions plugin;
-
+    
     public ShowCommand(Factions factions) {
         this.plugin = factions;
     }
@@ -36,10 +39,7 @@ public class ShowCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "You are not currently in a faction.");
             return true;
         }
-
-        player.sendMessage(ChatColor.GREEN + "Faction Details: " + factionName);
-        player.sendMessage(ChatColor.YELLOW + "User Data:");
-
+        
         String description = database.getFactionDescription(factionName);
         boolean isInviteOnly = database.isFactionInviteOnly(factionName);
         int land = database.getFactionLand(factionName);
@@ -48,7 +48,7 @@ public class ShowCommand implements CommandExecutor {
         int landValue = database.getFactionLandValue(factionName);
         double balance = database.getFactionBalance(factionName);
         int spawners = database.getFactionSpawners(factionName);
-        int allies = database.getFactionAlliesCount(factionName);
+        int alliesCount = tableUtils.getFactionAlliesCount(factionName);
         int totalMembers = database.getUsersInFactionCount(factionName);
 
         int onlineMembers = 0;
@@ -67,7 +67,18 @@ public class ShowCommand implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "Land Value: " + landValue);
         player.sendMessage(ChatColor.YELLOW + "Balance: " + balance);
         player.sendMessage(ChatColor.YELLOW + "Spawners: " + spawners);
-        player.sendMessage(ChatColor.YELLOW + "Allies: " + allies + "/∞");
+
+        String alliesPrefix = ChatColor.YELLOW + "Allies(" + alliesCount + "):";
+        player.sendMessage(alliesPrefix);
+
+        String allies = FactionUtils.getFactionAllies(factionName);
+        if (allies == null || allies.isEmpty()) {
+            player.sendMessage(ChatColor.GRAY + "Allies: (0)");
+        } else {
+            player.sendMessage(ChatColor.YELLOW + "Allies(" + alliesCount + "):");
+            player.sendMessage(ChatColor.GOLD + allies);
+        }
+
         player.sendMessage(ChatColor.YELLOW + "Online: " + onlineMembers + "/" + totalMembers);
 
         StringJoiner onlinePlayersJoiner = new StringJoiner(", ");
