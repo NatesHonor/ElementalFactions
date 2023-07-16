@@ -56,6 +56,41 @@ Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` w
 4. Restart the server or reload the plugin for the changes to take effect.
 5. Players can now find the custom elixir in the elixir selection GUI (`/elixir`) and obtain it by clicking on it.
 
+#### List of effects:
+PEED
+SLOW
+FAST_DIGGING
+SLOW_DIGGING
+INCREASE_DAMAGE
+HEAL
+HARM
+JUMP
+CONFUSION
+REGENERATION
+DAMAGE_RESISTANCE
+FIRE_RESISTANCE
+WATER_BREATHING
+INVISIBILITY
+BLINDNESS
+NIGHT_VISION
+HUNGER
+WEAKNESS
+POISON
+WITHER
+HEALTH_BOOST
+ABSORPTION
+SATURATION
+GLOWING
+LEVITATION
+LUCK
+UNLUCK
+SLOW_FALLING
+CONDUIT_POWER
+DOLPHINS_GRACE
+BAD_OMEN
+HERO_OF_THE_VILLAGE
+DARKNESS
+
 ### Spawning a Horse with Upgraded Speed
 
 To spawn a horse with upgraded speed, use the `/horse` command. When executed, a horse with increased speed will be spawned at your location.
