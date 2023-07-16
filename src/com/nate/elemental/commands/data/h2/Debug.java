@@ -13,6 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.TableUtils;
 
 public class Debug implements CommandExecutor {
 
@@ -29,9 +30,8 @@ public class Debug implements CommandExecutor {
 	        getTableData(tableName);
 	    }
 
-	    Database database = new Database();
-	
-	    List<String> tableData = database.getTableData(tableName);
+	    TableUtils tableUtils = new TableUtils();
+	    List<String> tableData = tableUtils.getTableData(tableName);
 
 	    sender.sendMessage("Table: " + tableName);
 	    sender.sendMessage("Data:");

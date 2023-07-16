@@ -7,12 +7,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.InvitesTable;
 
 public class AcceptCommand implements CommandExecutor {
     private final Database database;
-
+    private final InvitesTable invitesTable;
     public AcceptCommand() {
         this.database = new Database();
+        this.invitesTable = new InvitesTable();
     }
 
     @Override
@@ -31,7 +33,7 @@ public class AcceptCommand implements CommandExecutor {
 
         String inviterName = args[1];
 
-        if (!database.isInvitePending(inviterName, player.getName())) {
+        if (!invitesTable.isInvitePending(inviterName, player.getName())) {
             player.sendMessage(ChatColor.RED + "You don't have a pending invitation from that player.");
             return true;
         }

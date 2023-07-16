@@ -23,6 +23,19 @@ public class UserTable {
         }
         return false;
     }
+    
+    public void subtractPowerAndChunks(String playerName, int amount) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE users SET power = power - ?, chunks = chunks - ? WHERE name = ?")) {
+            statement.setInt(1, amount);
+            statement.setInt(2, amount);
+            statement.setString(3, playerName);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+ 
 
     public static void addPlayer(String playerName, String factionName, int power, int chunks) {
         try (Connection connection = DatabaseConnection.getConnection();

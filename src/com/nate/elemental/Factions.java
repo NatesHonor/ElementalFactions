@@ -19,6 +19,7 @@ import com.nate.elemental.commands.data.h2.Debug;
 import com.nate.elemental.commands.factions.AcceptCommand;
 import com.nate.elemental.commands.factions.ClaimCommand;
 import com.nate.elemental.commands.factions.CreateFactionCommand;
+import com.nate.elemental.commands.factions.DescCommand;
 import com.nate.elemental.commands.factions.DisbandCommand;
 import com.nate.elemental.commands.factions.InviteCommand;
 import com.nate.elemental.commands.factions.ListFactions;
@@ -32,9 +33,11 @@ import com.nate.elemental.commands.shops.SpawnerShopCommand;
 import com.nate.elemental.items.FireballItem;
 import com.nate.elemental.utils.CombatTagHandler;
 import com.nate.elemental.utils.PearlCooldownHandler;
-import com.nate.elemental.utils.shops.spawner.SpawnerBreakListener;
+import com.nate.elemental.utils.events.GainPlayerPower;
+import com.nate.elemental.utils.events.PlayerDeathListener;
 import com.nate.elemental.utils.shops.spawner.SpawnerPlaceListener;
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.FactionsTable;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -51,7 +54,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
 	@Override
     public void onEnable() {
     	instance = this;
-
+    	
         this.saveDefaultConfig();
         
         url = "jdbc:h2:" + getDataFolder().getAbsolutePath() + "\\Factions";
@@ -68,9 +71,11 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             getLogger().warning("Vault dependency not found. Economy integration disabled.");
         }
         
-        	new Database();
- 
-            Database.createTables();
+        	Database database = new Database();
+        	GainPlayerPower gainPlayerPower = new GainPlayerPower(database, this);
+        	
+        	gainPlayerPower.enablePowerUpdates();
+            FactionsTable.createTables();
             
             boolean canFireballExplode = true;
 
@@ -83,7 +88,8 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             FireballItem fireballItem = new FireballItem(this, canFireballExplode);
             CombatTagHandler combatTagHandler = new CombatTagHandler();
             PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler(this);
-
+            PlayerDeathListener playerDeathListener = new PlayerDeathListener(database, this);
+            
             getCommand("f").setExecutor(this);
             getCommand("horse").setExecutor(horseCommand);
             getCommand("elixir").setExecutor(elixirCommand);
@@ -101,6 +107,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     		getServer().getPluginManager().registerEvents(spawnerPlaceListener, this);
     		getServer().getPluginManager().registerEvents(pearlCooldownHandler, this);
     		getServer().getPluginManager().registerEvents(elixirCommand, this);
+    		getServer().getPluginManager().registerEvents(playerDeathListener, this);
     }
 
     @Override
@@ -171,6 +178,14 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                             sender.sendMessage(ChatColor.RED + "Usage: /f create <name>");
                         }
                         break;
+                    case "desc":
+                    case "description":
+                    	if (args.length >= 2) {
+                    		DescCommand descCommand = new DescCommand();
+                    		descCommand.onCommand(sender, command, label, args);
+                    		return true;
+                    	}
+                    	break;
                     case "list":
                         if (args.length >= 1) {
                             ListFactions listCommand = new ListFactions(this);

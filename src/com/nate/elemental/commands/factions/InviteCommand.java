@@ -9,14 +9,16 @@ import org.bukkit.entity.Player;
 
 import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.InvitesTable;
 
 public class InviteCommand implements CommandExecutor {
     private final Factions plugin;
     private final Database database;
-
+    private final InvitesTable invitesTable;
     public InviteCommand(Factions plugin) {
         this.plugin = plugin;
         this.database = new Database();
+        this.invitesTable = new InvitesTable();
     }
 
     @Override
@@ -48,22 +50,21 @@ public class InviteCommand implements CommandExecutor {
             return true;
         }
 
-        if (database.isInvitePending(invitee.getName(), inviter.getName())) {
+        if (invitesTable.isInvitePending(invitee.getName(), inviter.getName())) {
             inviter.sendMessage(ChatColor.RED + "An invitation has already been sent to that player.");
             return true;
         }
 
-        // Add the invite to the database
-        long expiryTime = System.currentTimeMillis() + (30 * 1000); // Set expiry time to 30 seconds
-        database.addInvite(inviter.getName(), invitee.getName(), factionName, expiryTime);
+        long expiryTime = System.currentTimeMillis() + (30 * 1000);
+        invitesTable.addInvite(inviter.getName(), invitee.getName(), factionName, expiryTime);
 
         String inviteMessage = ChatColor.YELLOW + inviter.getName() + " invited you to the faction " + factionName
                 + ". Type '/f accept " + inviter.getName() + "' to accept!";
         invitee.sendMessage(inviteMessage);
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (database.isInvitePending(invitee.getName(), inviter.getName())) {
-                database.removeInvite(invitee.getName(), inviter.getName());
+            if (invitesTable.isInvitePending(invitee.getName(), inviter.getName())) {
+            	invitesTable.removeInvite(invitee.getName(), inviter.getName());
                 invitee.sendMessage(ChatColor.RED + "The faction invitation has expired.");
             }
         }, 30 * 20);

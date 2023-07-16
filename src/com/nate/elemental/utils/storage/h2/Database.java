@@ -15,7 +15,6 @@ import com.nate.elemental.Factions;
 
 public class Database {
 	private static final String DB_URL = Factions.getConnectionURL();
-
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
@@ -31,104 +30,7 @@ public class Database {
         return false;
     }
 
-    public List<String> getTableNames() {
-        List<String> tableNames = new ArrayList<>();
-        try (Connection connection = getConnection()) {
-            DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet resultSet = metaData.getTables(null, null, null, new String[]{"TABLE"});
-            while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
-                tableNames.add(tableName);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tableNames;
-    }
-
-    public List<String> getTableData(String tableName) {
-        List<String> tableData = new ArrayList<>();
-        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            while (resultSet.next()) {
-                StringBuilder row = new StringBuilder();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.append(metaData.getColumnName(i)).append(": ").append(resultSet.getString(i)).append(" ");
-                }
-                tableData.add(row.toString());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tableData;
-    }
-
-    
-
-    public static void createTables() {
-        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE IF NOT EXISTS users ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
-            		+ "name VARCHAR(255),"
-                    + "chunks INT,"
-                    + "power INT,"
-                    + "faction_name VARCHAR(255),"
-                    + "rank VARCHAR(255)"
-                    + ")");
-
-            statement.execute("CREATE TABLE IF NOT EXISTS factions ("
-            	    + "id INT AUTO_INCREMENT PRIMARY KEY,"
-            	    + "name VARCHAR(255),"
-            	    + "description VARCHAR(255),"
-            	    + "chunks INT,"
-            	    + "owner VARCHAR(255),"
-            	    + "tag VARCHAR(255),"
-            	    + "invite_only INT,"
-            	    + "land INT,"
-            	    + "power INT,"
-            	    + "max_power INT,"
-            	    + "land_value INT,"
-            	    + "balance DOUBLE,"
-            	    + "spawners INT,"
-            	    + "allies_count INT,"
-            	    + "online_members_count INT,"
-            	    + "total_members_count INT,"
-            	    + "members VARCHAR(255)"
-            	    + ")");
-            
-            statement.execute("CREATE TABLE IF NOT EXISTS claimed_chunks ("
-                    + "faction_name VARCHAR(255),"
-                    + "chunk_key VARCHAR(255)"
-                    + ")");
-            
-            statement.execute("CREATE TABLE IF NOT EXISTS invites ("
-                    + "inviter_name VARCHAR(255),"
-                    + "invitee_name VARCHAR(255),"
-                    + "faction_name VARCHAR(255),"
-                    + "expiry_time BIGINT"
-                    + ")");
-            
-            if (!factionExists("wilderness")) {
-                statement.execute("INSERT INTO factions (name, description, chunks, owner, tag, invite_only, land, power, max_power, land_value, balance, spawners, allies_count, online_members_count, total_members_count, members) VALUES ('wilderness', 'PvP is Enabled and it''s cold out here.', 0, '', '', 0, 0, 0, 0, 0, 0.0, 0, 0, 0, 0, '')");
-            }
-
-            if (!factionExists("warzone")) {
-                statement.execute("INSERT INTO factions (name, description, chunks, owner, tag, invite_only, land, power, max_power, land_value, balance, spawners, allies_count, online_members_count, total_members_count, members) VALUES ('warzone', 'PvP Enabled', 0, '', '', 0, 0, 0, 0, 0, 0.0, 0, 0, 0, 0, '')");
-            }
-
-            if (!factionExists("safezone")) {
-                statement.execute("INSERT INTO factions (name, description, chunks, owner, tag, invite_only, land, power, max_power, land_value, balance, spawners, allies_count, online_members_count, total_members_count, members) VALUES ('safezone', 'PvP is Disabled', 0, '', '', 0, 0, 0, 0, 0, 0.0, 0, 0, 0, 0, '')");
-            }
-            
-
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+ 
     public void createFaction(String name, String owner, String description, int power) {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO factions (name, owner, description, power) VALUES (?, ?, ?, ?)")) {
@@ -143,47 +45,44 @@ public class Database {
         updateusersFaction(owner, name, "founder");
     }
     
-    public void addInvite(String inviterName, String inviteeName, String factionName, long expiryTime) {
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO invites (inviter_name, invitee_name, faction_name, expiry_time) VALUES (?, ?, ?, ?)")) {
-            statement.setString(1, inviterName);
-            statement.setString(2, inviteeName);
-            statement.setString(3, factionName);
-            statement.setLong(4, expiryTime);
+
+    public int getPlayerPower(String playerName) {
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT power FROM users WHERE name = ?")) {
+            statement.setString(1, playerName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("power");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public void subtractPlayerPower(String playerName, int amount) {
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE users SET power = power - ? WHERE name = ?")) {
+            statement.setInt(1, amount);
+            statement.setString(2, playerName);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addPlayerPower(String playerName, int amount) {
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement("UPDATE users SET power = power + ? WHERE name = ?")) {
+            statement.setInt(1, amount);
+            statement.setString(2, playerName);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    public boolean isInvitePending(String inviterName, String inviteeName) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT COUNT(*) AS count FROM invites WHERE inviter_name = ? AND invitee_name = ?")) {
-            statement.setString(1, inviterName);
-            statement.setString(2, inviteeName);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getInt("count");
-                return count > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public void removeInvite(String inviterName, String inviteeName) {
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM invites WHERE inviter_name = ? AND invitee_name = ?")) {
-            statement.setString(1, inviterName);
-            statement.setString(2, inviteeName);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getInviterFactionName(String inviteeName, String inviterName) {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(
                 "SELECT faction_name FROM invites WHERE invitee_name = ? AND inviter_name = ?")) {
