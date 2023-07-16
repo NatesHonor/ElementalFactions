@@ -56,7 +56,7 @@ Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` w
 4. Restart the server or reload the plugin for the changes to take effect.
 5. Players can now find the custom elixir in the elixir selection GUI (`/elixir`) and obtain it by clicking on it.
 
-#### List of effects:
+### List of effects:
 PEED
 SLOW
 FAST_DIGGING
