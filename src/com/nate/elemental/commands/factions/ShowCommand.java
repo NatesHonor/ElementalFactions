@@ -20,7 +20,7 @@ public class ShowCommand implements CommandExecutor {
     
     @SuppressWarnings("unused")
     private Factions plugin;
-    
+    FactionUtils factionUtils = new FactionUtils();
     public ShowCommand(Factions factions) {
         this.plugin = factions;
     }
@@ -68,9 +68,6 @@ public class ShowCommand implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "Balance: " + balance);
         player.sendMessage(ChatColor.YELLOW + "Spawners: " + spawners);
 
-        String alliesPrefix = ChatColor.YELLOW + "Allies(" + alliesCount + "):";
-        player.sendMessage(alliesPrefix);
-
         String allies = FactionUtils.getFactionAllies(factionName);
         if (allies == null || allies.isEmpty()) {
             player.sendMessage(ChatColor.GRAY + "Allies: (0)");
@@ -85,15 +82,21 @@ public class ShowCommand implements CommandExecutor {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             String playerName = onlinePlayer.getName();
             String playerRank = database.getUserRank(playerName);
+            String playerPrefix = factionUtils.getRankPrefix(factionName, playerRank);
             if (database.getUserFactionName(playerName).equals(factionName)) {
                 StringBuilder onlineUserString = new StringBuilder();
 
-                if (playerRank.equalsIgnoreCase("founder")) {
-                    onlineUserString.append(ChatColor.GOLD).append("*** ");
-                } else if (playerRank.equalsIgnoreCase("coleader")) {
-                    onlineUserString.append(ChatColor.GOLD).append("** ");
-                } else if (playerRank.equalsIgnoreCase("moderator")) {
-                    onlineUserString.append(ChatColor.GOLD).append("* ");
+                if (playerPrefix != null && !playerPrefix.isEmpty()) {
+                    playerPrefix = ChatColor.translateAlternateColorCodes('&', playerPrefix + " ");
+                    onlineUserString.append(playerPrefix);
+                } else {
+                    if (playerRank.equalsIgnoreCase("founder")) {
+                        onlineUserString.append(ChatColor.GOLD).append("*** ");
+                    } else if (playerRank.equalsIgnoreCase("coleader")) {
+                        onlineUserString.append(ChatColor.GOLD).append("** ");
+                    } else if (playerRank.equalsIgnoreCase("moderator")) {
+                        onlineUserString.append(ChatColor.GOLD).append("* ");
+                    }
                 }
 
                 onlineUserString.append(playerName);

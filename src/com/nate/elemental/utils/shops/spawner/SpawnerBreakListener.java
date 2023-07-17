@@ -1,39 +1,30 @@
 package com.nate.elemental.utils.shops.spawner;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
+import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class SpawnerBreakListener implements Listener {
-    
+
+    private final Spawner spawnerUtils;
+
+    public SpawnerBreakListener() {
+        this.spawnerUtils = new Spawner();
+    }  
+
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() == Material.SPAWNER) {
-            Location spawnerLocation = event.getBlock().getLocation();
-            deleteHologram(spawnerLocation);
+    public void onSpawnerBreakEvent(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        if (block.getType() == Material.SPAWNER) {
+            CreatureSpawner spawner = (CreatureSpawner) block.getState();
+            String entityName = spawnerUtils.getFormattedEntityName(spawner.getSpawnedType().name());
+            Player player = event.getPlayer();
+            player.sendMessage("You have broken a " + entityName + " Spawner!");
         }
     }
-
-    private void deleteHologram(Location spawnerLocation) {
-        double armorStandY = spawnerLocation.getY() + 1;
-
-        ArmorStand nearestArmorStand = null;
-        double nearestDistance = Double.MAX_VALUE;
-        for (Entity entity : spawnerLocation.getWorld().getEntitiesByClass(ArmorStand.class)) {
-            double distance = entity.getLocation().distanceSquared(spawnerLocation);
-            if (distance < nearestDistance) {
-                nearestArmorStand = (ArmorStand) entity;
-                nearestDistance = distance;
-            }
-        }
-
-        if (nearestArmorStand != null && nearestArmorStand.getLocation().getY() == armorStandY) {
-            nearestArmorStand.remove();
-        }
-    }
-
 }
+

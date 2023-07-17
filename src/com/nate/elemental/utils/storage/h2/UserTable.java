@@ -52,7 +52,7 @@ public class UserTable {
 
     public static String getUserFactionName(String playerName) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT faction_name FROM `user` WHERE name = ?")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT faction_name FROM users WHERE name = ?")) {
             statement.setString(1, playerName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -67,9 +67,10 @@ public class UserTable {
         return null;
     }
 
+    
     public static void updateUserFaction(String playerName, String factionName, String rank) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE `user` SET faction_name = ?, rank = ? WHERE name = ?")) {
+             PreparedStatement statement = connection.prepareStatement("UPDATE users SET faction_name = ?, rank = ? WHERE name = ?")) {
             statement.setString(1, factionName);
             statement.setString(2, rank);
             statement.setString(3, playerName);

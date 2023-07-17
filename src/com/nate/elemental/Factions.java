@@ -26,6 +26,7 @@ import com.nate.elemental.commands.factions.InviteCommand;
 import com.nate.elemental.commands.factions.ListFactions;
 import com.nate.elemental.commands.factions.MapCommand;
 import com.nate.elemental.commands.factions.PromoteCommand;
+import com.nate.elemental.commands.factions.SettingsCommand;
 import com.nate.elemental.commands.factions.ShowCommand;
 import com.nate.elemental.commands.shops.ElixirCommand;
 import com.nate.elemental.commands.shops.HorseCommand;
@@ -36,7 +37,9 @@ import com.nate.elemental.utils.CombatTagHandler;
 import com.nate.elemental.utils.PearlCooldownHandler;
 import com.nate.elemental.utils.events.GainPlayerPower;
 import com.nate.elemental.utils.events.PlayerDeathListener;
+import com.nate.elemental.utils.shops.spawner.SpawnerBreakListener;
 import com.nate.elemental.utils.shops.spawner.SpawnerPlaceListener;
+import com.nate.elemental.utils.shops.spawner.SpawnerSpawnListener;
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionsTable;
 
@@ -86,10 +89,13 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             RaidShopCommand raidShopCommand = new RaidShopCommand(this);
             SpawnerShopCommand spawnerShopCommand = new SpawnerShopCommand(this);
             SpawnerPlaceListener spawnerPlaceListener = new SpawnerPlaceListener();
+            SpawnerBreakListener spawnerBreakListener = new SpawnerBreakListener();
             FireballItem fireballItem = new FireballItem(this, canFireballExplode);
             CombatTagHandler combatTagHandler = new CombatTagHandler();
             PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler(this);
             PlayerDeathListener playerDeathListener = new PlayerDeathListener(database, this);
+            SettingsCommand settingsCommand = new SettingsCommand();
+            SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
             
             getCommand("f").setExecutor(this);
             getCommand("horse").setExecutor(horseCommand);
@@ -98,6 +104,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             getCommand("raidshop").setExecutor(raidShopCommand);
             getCommand("spawnershop").setExecutor(spawnerShopCommand);
             
+            getServer().getPluginManager().registerEvents(settingsCommand, this);
     		getServer().getPluginManager().registerEvents(this, this);
             getServer().getPluginManager().registerEvents(fireballItem, this);
     		getServer().getPluginManager().registerEvents(claimCommand, this);
@@ -108,7 +115,9 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     		getServer().getPluginManager().registerEvents(spawnerPlaceListener, this);
     		getServer().getPluginManager().registerEvents(pearlCooldownHandler, this);
     		getServer().getPluginManager().registerEvents(elixirCommand, this);
+    		getServer().getPluginManager().registerEvents(spawnerBreakListener, this);
     		getServer().getPluginManager().registerEvents(playerDeathListener, this);
+    		getServer().getPluginManager().registerEvents(spawnerSpawnListener, this);
     }
 
     @Override
@@ -204,6 +213,12 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                             return true;
                         }
                         break;
+                    case "settings":
+                    	if (args.length >= 1) {
+                    		SettingsCommand settingsCommand = new SettingsCommand();
+                    		settingsCommand.onCommand(sender, command, label, args);
+                    	}
+                    	break;
                     case "show":
                         if (args.length >= 1) {
                             ShowCommand showFaction = new ShowCommand(this);

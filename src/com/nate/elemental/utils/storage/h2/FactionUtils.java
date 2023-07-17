@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.bukkit.entity.Player;
+
 public class FactionUtils {
 
 	 public static void changeFactionDescription(String factionName, String newDescription) {
@@ -187,6 +189,37 @@ public class FactionUtils {
 	            e.printStackTrace();
 	        }
 	        return false;
+	    }
+	    
+	    public void storeRankPrefix(Player player, String selectedRank, String prefix) {
+	        String factionName = UserTable.getUserFactionName(player.getName());
+	        try (Connection connection = DatabaseConnection.getConnection();
+	             PreparedStatement statement = connection.prepareStatement(
+	                     "INSERT INTO rank_prefix (faction_name, rank, prefix) VALUES (?, ?, ?)")) {
+	            statement.setString(1, factionName);
+	            statement.setString(2, selectedRank);
+	            statement.setString(3, prefix);
+	            statement.executeUpdate();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    public String getRankPrefix(String factionName, String rank) {
+	        String prefix = null;
+	        try (Connection connection = DatabaseConnection.getConnection();
+	             PreparedStatement statement = connection.prepareStatement("SELECT prefix FROM rank_prefix WHERE faction_name = ? AND rank = ?")) {
+	            statement.setString(1, factionName);
+	            statement.setString(2, rank);
+
+	            ResultSet resultSet = statement.executeQuery();
+	            if (resultSet.next()) {
+	                prefix = resultSet.getString("prefix");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	        return prefix;
 	    }
 	 
 	}

@@ -57,6 +57,13 @@ public class FactionsTable {
                     + "enemies VARCHAR(500)"
                     + ")");
 
+            statement.execute("CREATE TABLE IF NOT EXISTS rank_prefix ("
+                    + "faction_name VARCHAR(255) NOT NULL,"
+                    + "rank VARCHAR(255) NOT NULL,"
+                    + "prefix VARCHAR(255) NOT NULL,"
+                    + "PRIMARY KEY (faction_name, rank)"
+                    + ")");
+            
             statement.execute("CREATE TABLE IF NOT EXISTS claimed_chunks ("
                     + "faction_name VARCHAR(255),"
                     + "chunk_key VARCHAR(255)"
