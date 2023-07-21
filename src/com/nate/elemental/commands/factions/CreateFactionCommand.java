@@ -44,8 +44,9 @@ public class CreateFactionCommand implements CommandExecutor {
 
             String description = "A regular faction";
             int power = database.getusersPower(player.getName());
+            int chunks = power;
 
-            database.createFaction(factionName, player.getName(), description, power);
+            database.createFaction(factionName, player.getName(), description, power, chunks);
             database.updateusersFaction(player.getName(), factionName, "founder");
 
             Bukkit.broadcastMessage(player.getName() + " created the faction " + factionName + ".");

@@ -1,5 +1,6 @@
 package com.nate.elemental;
 
+import java.io.File;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -8,6 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,19 +53,21 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     private static Factions instance;
     private Economy economy;
 	boolean usePackets = false;
-
+    private static FileConfiguration messagesConfig;
+    private FileConfiguration config;
+    private File configFile;
+    
     public static Factions getInstance() {
         return instance;
     }
     
-	@Override
+    @Override
     public void onEnable() {
-    	instance = this;
-    	
+        instance = this;
+
         this.saveDefaultConfig();
-        
         url = "jdbc:h2:" + getDataFolder().getAbsolutePath() + "\\Factions";
-        
+
         try {
             Class.forName("org.h2.Driver");
             DriverManager.getConnection(url);
@@ -70,60 +75,97 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         } catch (SQLException | ClassNotFoundException throwables) {
             throwables.printStackTrace();
         }
-        
+
         if (!setupEconomy()) {
             getLogger().warning("Vault dependency not found. Economy integration disabled.");
         }
-        
-        	Database database = new Database();
-        	GainPlayerPower gainPlayerPower = new GainPlayerPower(database, this);
-        	
-        	gainPlayerPower.enablePowerUpdates();
-            FactionsTable.createTables();
-            
-            boolean canFireballExplode = true;
 
-            HorseCommand horseCommand = new HorseCommand();
-            ElixirCommand elixirCommand = new ElixirCommand(this);
-            ClaimCommand claimCommand = new ClaimCommand(this);
-            RaidShopCommand raidShopCommand = new RaidShopCommand(this);
-            SpawnerShopCommand spawnerShopCommand = new SpawnerShopCommand(this);
-            SpawnerPlaceListener spawnerPlaceListener = new SpawnerPlaceListener();
-            SpawnerBreakListener spawnerBreakListener = new SpawnerBreakListener();
-            FireballItem fireballItem = new FireballItem(this, canFireballExplode);
-            CombatTagHandler combatTagHandler = new CombatTagHandler();
-            PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler(this);
-            PlayerDeathListener playerDeathListener = new PlayerDeathListener(database, this);
-            SettingsCommand settingsCommand = new SettingsCommand();
-            SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
-            
-            getCommand("f").setExecutor(this);
-            getCommand("horse").setExecutor(horseCommand);
-            getCommand("elixir").setExecutor(elixirCommand);
-            getCommand("debug-h2").setExecutor(new Debug());
-            getCommand("raidshop").setExecutor(raidShopCommand);
-            getCommand("spawnershop").setExecutor(spawnerShopCommand);
-            
-            getServer().getPluginManager().registerEvents(settingsCommand, this);
-    		getServer().getPluginManager().registerEvents(this, this);
-            getServer().getPluginManager().registerEvents(fireballItem, this);
-    		getServer().getPluginManager().registerEvents(claimCommand, this);
-    		getServer().getPluginManager().registerEvents(horseCommand, this);
-            getServer().getPluginManager().registerEvents(raidShopCommand, this);
-    		getServer().getPluginManager().registerEvents(combatTagHandler, this);
-            getServer().getPluginManager().registerEvents(spawnerShopCommand, this);
-    		getServer().getPluginManager().registerEvents(spawnerPlaceListener, this);
-    		getServer().getPluginManager().registerEvents(pearlCooldownHandler, this);
-    		getServer().getPluginManager().registerEvents(elixirCommand, this);
-    		getServer().getPluginManager().registerEvents(spawnerBreakListener, this);
-    		getServer().getPluginManager().registerEvents(playerDeathListener, this);
-    		getServer().getPluginManager().registerEvents(spawnerSpawnListener, this);
+        Database database = new Database();
+        GainPlayerPower gainPlayerPower = new GainPlayerPower(database, this);
+
+        gainPlayerPower.enablePowerUpdates();
+        FactionsTable.createTables();
+
+        boolean canFireballExplode = true;
+
+        HorseCommand horseCommand = new HorseCommand();
+        ElixirCommand elixirCommand = new ElixirCommand(this);
+        ClaimCommand claimCommand = new ClaimCommand(this);
+        RaidShopCommand raidShopCommand = new RaidShopCommand(this);
+        SpawnerShopCommand spawnerShopCommand = new SpawnerShopCommand(this);
+        SpawnerPlaceListener spawnerPlaceListener = new SpawnerPlaceListener();
+        SpawnerBreakListener spawnerBreakListener = new SpawnerBreakListener();
+        FireballItem fireballItem = new FireballItem(this, canFireballExplode);
+        CombatTagHandler combatTagHandler = new CombatTagHandler();
+        PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler(this);
+        PlayerDeathListener playerDeathListener = new PlayerDeathListener(database, this);
+        SettingsCommand settingsCommand = new SettingsCommand();
+        SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
+
+        getCommand("f").setExecutor(this);
+        getCommand("horse").setExecutor(horseCommand);
+        getCommand("elixir").setExecutor(elixirCommand);
+        getCommand("debug-h2").setExecutor(new Debug());
+        getCommand("raidshop").setExecutor(raidShopCommand);
+        getCommand("spawnershop").setExecutor(spawnerShopCommand);
+
+        getServer().getPluginManager().registerEvents(settingsCommand, this);
+        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(fireballItem, this);
+        getServer().getPluginManager().registerEvents(claimCommand, this);
+        getServer().getPluginManager().registerEvents(horseCommand, this);
+        getServer().getPluginManager().registerEvents(raidShopCommand, this);
+        getServer().getPluginManager().registerEvents(combatTagHandler, this);
+        getServer().getPluginManager().registerEvents(spawnerShopCommand, this);
+        getServer().getPluginManager().registerEvents(spawnerPlaceListener, this);
+        getServer().getPluginManager().registerEvents(pearlCooldownHandler, this);
+        getServer().getPluginManager().registerEvents(elixirCommand, this);
+        getServer().getPluginManager().registerEvents(spawnerBreakListener, this);
+        getServer().getPluginManager().registerEvents(playerDeathListener, this);
+        getServer().getPluginManager().registerEvents(spawnerSpawnListener, this);
+
+        // Remove this line since you are already using the configFile object
+        // new File(getDataFolder(), "messages.yml");
+        configFile = new File(getDataFolder(), "messages.yml");
+        messagesConfig = YamlConfiguration.loadConfiguration(configFile);
+
+        if (!configFile.exists()) {
+            saveResource("messages.yml", false);
+        }
+
+        if (messagesConfig == null) {
+            getLogger().severe("messagesConfig is null!");
+        } else {
+            getLogger().info("messagesConfig loaded successfully.");
+        }
+        String helpMessagePath = "Help-Message";
+        getLogger().info("Help message section exists: " + messagesConfig.isConfigurationSection(helpMessagePath));
+
     }
 
-    @Override
-    public void onDisable() {
 
+    
+    @EventHandler
+    public void createPlayerOnJoin(PlayerJoinEvent e) {
+        Database database = new Database();
+        Player player = e.getPlayer();
+        String playerName = player.getName();
+
+        if (!database.playerExists(playerName)) {
+            database.addPlayer(playerName, "wilderness", 10, 10);
+            Bukkit.getLogger().info(playerName + ": wilderness power: 10 chunks: 10");
+        }
     }
+    
+    private FileConfiguration getConfig(String fileName) {
+        File configFile = new File(getDataFolder(), fileName);
+        return YamlConfiguration.loadConfiguration(configFile);
+    }
+
+    private String getMessage(String key, String defaultValue) {
+        return ChatColor.translateAlternateColorCodes('&', messagesConfig.getString(key, defaultValue));
+    }
+    
 
     public static String getConnectionURL() {
         if (url == null) {
@@ -149,63 +191,54 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     public Economy getEconomy() {
         return economy;
     }
-    
-    @EventHandler
-    public void createPlayerOnJoin(PlayerJoinEvent e) {
-        Database database = new Database();
-        Player player = e.getPlayer();
-        String playerName = player.getName();
 
-        if (!database.playerExists(playerName)) {
-            database.addPlayer(playerName, "wilderness", 10, 10);
-            Bukkit.getLogger().info(playerName + ": wilderness power: 10 chunks: 10");
-        }
-    }
-    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("f")) {
             if (args.length == 0) {
                 String helpMessagePath = "Help-Message";
-                if (getConfig().isConfigurationSection(helpMessagePath)) {
-                    for (String key : getConfig().getConfigurationSection(helpMessagePath).getKeys(false)) {
-                        String[] helpMessages = getConfig().getStringList(helpMessagePath + "." + key).toArray(new String[0]);
+                if (messagesConfig.isConfigurationSection(helpMessagePath)) {
+                    for (String key : messagesConfig.getConfigurationSection(helpMessagePath).getKeys(false)) {
+                        String[] helpMessages = messagesConfig.getStringList(helpMessagePath + "." + key).toArray(new String[0]);
                         for (String helpMessage : helpMessages) {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
+                            sender.sendMessage(getMessage(key, helpMessage));
+                     
                         }
                     }
+                } else {
+                    sender.sendMessage(ChatColor.RED + "No help message found for this command.");
                 }
                 return true;
             } else if (args.length >= 1) {
                 String subCommand = args[0].toLowerCase();
                 switch (subCommand) {
                     case "ally":
-                    	if (args.length >= 2) {
-                    		AllyCommand allyCommand = new AllyCommand();
-                    		allyCommand.onCommand(sender, command, label, args);
-                    	} else {
-                    		sender.sendMessage(ChatColor.RED + "Usage: /f ally <faction>");
-                    	}
-                    	break; 
+                        if (args.length >= 2) {
+                            AllyCommand allyCommand = new AllyCommand();
+                            allyCommand.onCommand(sender, command, label, args);
+                        } else {
+                            sender.sendMessage(getMessage("usage.ally", "&cUsage: /f ally <faction>"));
+                        }
+                        break;
                     case "create":
                         if (args.length >= 2) {
                             CreateFactionCommand createCommand = new CreateFactionCommand();
                             createCommand.onCommand(sender, command, label, args);
                             return true;
                         } else {
-                            sender.sendMessage(ChatColor.RED + "Usage: /f create <name>");
+                            sender.sendMessage(getMessage("usage.create", "&cUsage: /f create <name>"));
                         }
                         break;
                     case "desc":
                     case "description":
-                    	if (args.length >= 2) {
-                    		DescCommand descCommand = new DescCommand();
-                    		descCommand.onCommand(sender, command, label, args);
-                    		return true;
-                    	} else {
-                    		sender.sendMessage(ChatColor.RED + "Usage: /f desc <description>");
-                    	}
-                    	break;
+                        if (args.length >= 2) {
+                            DescCommand descCommand = new DescCommand();
+                            descCommand.onCommand(sender, command, label, args);
+                            return true;
+                        } else {
+                            sender.sendMessage(getMessage("usage.desc", "&cUsage: /f desc <description>"));
+                        }
+                        break;
                     case "list":
                         if (args.length >= 1) {
                             ListFactions listCommand = new ListFactions(this);
@@ -214,57 +247,59 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                         }
                         break;
                     case "settings":
-                    	if (args.length >= 1) {
-                    		SettingsCommand settingsCommand = new SettingsCommand();
-                    		settingsCommand.onCommand(sender, command, label, args);
-                    	}
-                    	break;
+                        if (args.length >= 1) {
+                            SettingsCommand settingsCommand = new SettingsCommand();
+                            settingsCommand.onCommand(sender, command, label, args);
+                        }
+                        break;
                     case "show":
                         if (args.length >= 1) {
-                            ShowCommand showFaction = new ShowCommand(this);
+                            ShowCommand showFaction = new ShowCommand();
                             showFaction.onCommand(sender, command, label, args);
                         } else {
-                            sender.sendMessage(ChatColor.RED + "Usage: /f show");
+                            sender.sendMessage(getMessage("usage.show", "&cUsage: /f show"));
                         }
                         break;
                     case "disband":
-                    	if (args.length >= 1) {
-                    		DisbandCommand disbandCommand = new DisbandCommand(this);
-                    		disbandCommand.onCommand(sender, command, label, args);
-                    	} else {
-                    		sender.sendMessage(ChatColor.RED + "Usage: /f disband");
-                    	}
-                    	break;
+                        if (args.length >= 1) {
+                            DisbandCommand disbandCommand = new DisbandCommand(this);
+                            disbandCommand.onCommand(sender, command, label, args);
+                        } else {
+                            sender.sendMessage(getMessage("usage.disband", "&cUsage: /f disband"));
+                        }
+                        break;
                     case "claim":
-                    	if (args.length >= 1) {
-                    		ClaimCommand claimCommand = new ClaimCommand(this);
-                    		claimCommand.onCommand(sender, command, label, args);
-                    	}
+                        if (args.length >= 1) {
+                            ClaimCommand claimCommand = new ClaimCommand(this);
+                            claimCommand.onCommand(sender, command, label, args);
+                        }
+                        break;
                     case "map":
-                    	if (args.length >= 1) {
-                    		Database database = new Database();
-                    		MapCommand mapCommand = new MapCommand(database);
-                    		mapCommand.onCommand(sender, command, label, args);
-                    	}
-                    	break;
+                        if (args.length >= 1) {
+                            Database database = new Database();
+                            MapCommand mapCommand = new MapCommand(database);
+                            mapCommand.onCommand(sender, command, label, args);
+                        }
+                        break;
                     case "promote":
-                    	if (args.length >= 2) {
-                    		Database database = new Database();
-                    		PromoteCommand promoteCommand = new PromoteCommand(database);
-                    		promoteCommand.onCommand(sender, command, label, args);
-                    	} else {
-                    		sender.sendMessage(ChatColor.RED + "Usage: /f promote (user)");
-                    	}
+                        if (args.length >= 1) {
+                            Database database = new Database();
+                            PromoteCommand promoteCommand = new PromoteCommand(database);
+                            promoteCommand.onCommand(sender, command, label, args);
+                        } else {
+                            sender.sendMessage(getMessage("usage.promote", "&cUsage: /f promote (user)"));
+                        }
+                        break;
                     case "accept":
-                    		AcceptCommand acceptCommand = new AcceptCommand();
-                    		acceptCommand.onCommand(sender, command, label, args);
-                    break;
+                        AcceptCommand acceptCommand = new AcceptCommand();
+                        acceptCommand.onCommand(sender, command, label, args);
+                        break;
                     case "invite":
-                    	 InviteCommand inviteCommand = new InviteCommand(this);
-                    	 inviteCommand.onCommand(sender, command, label, args);
-                    break;
+                        InviteCommand inviteCommand = new InviteCommand(this);
+                        inviteCommand.onCommand(sender, command, label, args);
+                        break;
                     default:
-                        sender.sendMessage(ChatColor.RED + "Unknown command: " + subCommand);
+                        sender.sendMessage(getMessage("unknown-command", "&cUnknown command: " + subCommand));
                         break;
                 }
                 return true;
@@ -272,4 +307,10 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         }
         return false;
     }
+    
+    @Override
+    public void onDisable() {
+
+    }
+    
 }

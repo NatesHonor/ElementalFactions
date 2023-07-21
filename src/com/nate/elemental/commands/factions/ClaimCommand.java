@@ -12,15 +12,20 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.nate.elemental.Factions;
+import com.nate.elemental.utils.storage.h2.Chunkutils;
 import com.nate.elemental.utils.storage.h2.Database;
 
 public class ClaimCommand implements CommandExecutor, Listener {
     private final Factions plugin;
     private final Database database;
+    private final Chunkutils chunkutils;
+    private final int requiredChunks;
 
     public ClaimCommand(Factions plugin) {
         this.plugin = plugin;
         this.database = new Database();
+        this.chunkutils = new Chunkutils();
+        this.requiredChunks = 1;
     }
 
     @Override
@@ -46,6 +51,21 @@ public class ClaimCommand implements CommandExecutor, Listener {
         if (factionName == null) {
             factionName = "Wilderness";
         }
+
+        if (args.length > 0 && args[1].equalsIgnoreCase("auto")) {
+            player.sendMessage(ChatColor.GREEN + "Enabling auto claim...");
+            chunkutils.setAutoClaiming(player, true);
+            return true;
+        }
+
+        int availableChunks = chunkutils.getAvailableChunksForFaction(factionName);
+
+        if (availableChunks < requiredChunks) {
+            player.sendMessage(ChatColor.RED + "You don't have enough chunks to claim this land.");
+            return true;
+        }
+
+        chunkutils.updateAvailableChunksForFaction(factionName, availableChunks - requiredChunks);
 
         database.claimChunk(factionName, chunkKey);
 
@@ -87,11 +107,29 @@ public class ClaimCommand implements CommandExecutor, Listener {
         if (fromFaction == null && toFaction != null) {
             displayFactionInformation(player, toFaction);
         } else if (fromFaction != null && toFaction == null) {
-            player.resetTitle();
+            displayFactionInformation(player, "wilderness");
         } else if (fromFaction != null && toFaction != null && !fromFaction.equals(toFaction)) {
             displayFactionInformation(player, toFaction);
         } else if (fromFaction == null && toFaction == null) {
             player.resetTitle();
+        }
+
+        if (chunkutils.isAutoClaiming(player)) {
+            String chunkKey = getChunkKey(toChunk);
+
+            if (!database.isChunkClaimed(chunkKey)) {
+                String factionName = database.getUserFactionName(player.getName());
+                int availableChunks = chunkutils.getAvailableChunksForFaction(factionName);
+
+                if (availableChunks > 0) {
+                    database.claimChunk(factionName, chunkKey);
+                    chunkutils.updateAvailableChunksForFaction(factionName, availableChunks - 1);
+                    player.sendMessage(ChatColor.GREEN + "Auto claim: Chunk claimed successfully.");
+                } else {
+                    player.sendMessage(ChatColor.RED + "Auto claim: You don't have enough chunks to claim this land.");
+                    chunkutils.setAutoClaiming(player, false);
+                }
+            }
         }
     }
 }

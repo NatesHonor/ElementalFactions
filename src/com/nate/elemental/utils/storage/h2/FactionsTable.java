@@ -25,15 +25,6 @@ public class FactionsTable {
 
     public static void createTables() {
         try (Connection connection = DatabaseConnection.getConnection(); Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE IF NOT EXISTS users ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
-                    + "name VARCHAR(255),"
-                    + "chunks INT,"
-                    + "power INT,"
-                    + "faction_name VARCHAR(255),"
-                    + "rank VARCHAR(255)"
-                    + ")");
-
             statement.execute("CREATE TABLE IF NOT EXISTS factions ("
                     + "id INT AUTO_INCREMENT PRIMARY KEY,"
                     + "name VARCHAR(255),"
@@ -57,6 +48,15 @@ public class FactionsTable {
                     + "enemies VARCHAR(500)"
                     + ")");
 
+             statement.execute("CREATE TABLE IF NOT EXISTS users ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "name VARCHAR(255),"
+                    + "chunks INT,"
+                    + "power INT,"
+                    + "faction_name VARCHAR(255),"
+                    + "rank VARCHAR(255),"
+                    + "auto_claiming BOOLEAN DEFAULT FALSE"
+                    + ")");
             statement.execute("CREATE TABLE IF NOT EXISTS rank_prefix ("
                     + "faction_name VARCHAR(255) NOT NULL,"
                     + "rank VARCHAR(255) NOT NULL,"

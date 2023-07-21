@@ -31,13 +31,14 @@ public class Database {
     }
 
  
-    public void createFaction(String name, String owner, String description, int power) {
+    public void createFaction(String name, String owner, String description, int power, int chunks) {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO factions (name, owner, description, power) VALUES (?, ?, ?, ?)")) {
+                "INSERT INTO factions (name, owner, description, power, chunks) VALUES (?, ?, ?, ?, ?)")) {
             statement.setString(1, name);
             statement.setString(2, owner);
             statement.setString(3, "A faction!");
             statement.setInt(4, power);
+            statement.setInt(5, chunks);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

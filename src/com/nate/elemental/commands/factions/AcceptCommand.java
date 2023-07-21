@@ -6,13 +6,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.nate.elemental.utils.storage.h2.Chunkutils;
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.InvitesTable;
 
 public class AcceptCommand implements CommandExecutor {
     private final Database database;
     private final InvitesTable invitesTable;
+    private final Chunkutils chunkutils;
     public AcceptCommand() {
+    	this.chunkutils = new Chunkutils();
         this.database = new Database();
         this.invitesTable = new InvitesTable();
     }
@@ -39,7 +42,15 @@ public class AcceptCommand implements CommandExecutor {
         }
 
         String factionName = database.getInviterFactionName(player.getName(), inviterName);
+        
+        int factionPower = database.getFactionPower(factionName);
+        int factionChunks = chunkutils.getFactionChunks(factionName);
+        
+        chunkutils.updateFactionPower(factionName, factionPower + chunkutils.getUserPower(player.getName()));
+        chunkutils.updateFactionChunks(factionName, factionChunks + chunkutils.getUserChunks(player.getName()));
+        
         database.acceptFactionInvitation(player.getName(), inviterName);
+        
         player.sendMessage(ChatColor.GREEN + "You have accepted the faction invitation from " + inviterName + ".");
         player.sendMessage(ChatColor.GREEN + "You are now a member of the faction " + factionName + ".");
 

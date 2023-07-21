@@ -4,25 +4,25 @@ import java.util.StringJoiner;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionUtils;
 import com.nate.elemental.utils.storage.h2.TableUtils;
 
 public class ShowCommand implements CommandExecutor {
-    Database database = new Database();
-    TableUtils tableUtils = new TableUtils();
-    
-    @SuppressWarnings("unused")
-    private Factions plugin;
-    FactionUtils factionUtils = new FactionUtils();
-    public ShowCommand(Factions factions) {
-        this.plugin = factions;
+    private final Database database;
+    private final TableUtils tableUtils;
+    private final FactionUtils factionUtils;
+
+    public ShowCommand() {
+        this.database = new Database();
+        this.tableUtils = new TableUtils();
+        this.factionUtils = new FactionUtils();
     }
 
     @Override
@@ -39,12 +39,11 @@ public class ShowCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "You are not currently in a faction.");
             return true;
         }
-        
+
         String description = database.getFactionDescription(factionName);
         boolean isInviteOnly = database.isFactionInviteOnly(factionName);
         int land = database.getFactionLand(factionName);
         int power = database.getFactionPower(factionName);
-        int maxPower = database.getMaxFactionPower(factionName);
         int landValue = database.getFactionLandValue(factionName);
         double balance = database.getFactionBalance(factionName);
         int spawners = database.getFactionSpawners(factionName);
@@ -52,13 +51,21 @@ public class ShowCommand implements CommandExecutor {
         int totalMembers = database.getUsersInFactionCount(factionName);
 
         int onlineMembers = 0;
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            String playerName = onlinePlayer.getName();
+        int offlineMembers = 0;
+
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            String playerName = offlinePlayer.getName();
             String playerFaction = database.getUserFactionName(playerName);
             if (playerFaction != null && playerFaction.equals(factionName)) {
-                onlineMembers++;
+                if (offlinePlayer.isOnline()) {
+                    onlineMembers++;
+                } else {
+                    offlineMembers++;
+                }
             }
         }
+
+        int maxPower = totalMembers * 10;
 
         player.sendMessage(ChatColor.GREEN + "Faction Details: " + factionName);
         player.sendMessage(ChatColor.YELLOW + "Description: " + description);
@@ -76,36 +83,67 @@ public class ShowCommand implements CommandExecutor {
             player.sendMessage(ChatColor.GOLD + allies);
         }
 
-        player.sendMessage(ChatColor.YELLOW + "Online: " + onlineMembers + "/" + totalMembers);
+        player.sendMessage(ChatColor.YELLOW + "Online: (" + onlineMembers + "/" + totalMembers + ")" );
 
         StringJoiner onlinePlayersJoiner = new StringJoiner(", ");
+        StringJoiner offlinePlayersJoiner = new StringJoiner(", ");
+
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             String playerName = onlinePlayer.getName();
             String playerRank = database.getUserRank(playerName);
             String playerPrefix = factionUtils.getRankPrefix(factionName, playerRank);
             if (database.getUserFactionName(playerName).equals(factionName)) {
-                StringBuilder onlineUserString = new StringBuilder();
+                StringBuilder playerString = new StringBuilder();
 
                 if (playerPrefix != null && !playerPrefix.isEmpty()) {
                     playerPrefix = ChatColor.translateAlternateColorCodes('&', playerPrefix + " ");
-                    onlineUserString.append(playerPrefix);
+                    playerString.append(playerPrefix);
                 } else {
                     if (playerRank.equalsIgnoreCase("founder")) {
-                        onlineUserString.append(ChatColor.GOLD).append("*** ");
+                        playerString.append(ChatColor.GOLD).append("*** ");
                     } else if (playerRank.equalsIgnoreCase("coleader")) {
-                        onlineUserString.append(ChatColor.GOLD).append("** ");
+                        playerString.append(ChatColor.GOLD).append("** ");
                     } else if (playerRank.equalsIgnoreCase("moderator")) {
-                        onlineUserString.append(ChatColor.GOLD).append("* ");
+                        playerString.append(ChatColor.GOLD).append("* ");
                     }
                 }
 
-                onlineUserString.append(playerName);
-                onlinePlayersJoiner.add(onlineUserString.toString());
+                playerString.append(playerName);
+                onlinePlayersJoiner.add(playerString.toString());
             }
         }
 
-        player.sendMessage(ChatColor.YELLOW + "Players: " + onlinePlayersJoiner.toString());
+        player.sendMessage(ChatColor.YELLOW + onlinePlayersJoiner.toString());
+
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            String playerName = offlinePlayer.getName();
+            String playerRank = database.getUserRank(playerName);
+            String playerPrefix = factionUtils.getRankPrefix(factionName, playerRank);
+            if (database.getUserFactionName(playerName).equals(factionName) && !offlinePlayer.isOnline()) {
+                StringBuilder playerString = new StringBuilder();
+
+                if (playerPrefix != null && !playerPrefix.isEmpty()) {
+                    playerPrefix = ChatColor.translateAlternateColorCodes('&', playerPrefix + " ");
+                    playerString.append(playerPrefix);
+                } else {
+                    if (playerRank.equalsIgnoreCase("founder")) {
+                        playerString.append(ChatColor.GOLD).append("*** ");
+                    } else if (playerRank.equalsIgnoreCase("coleader")) {
+                        playerString.append(ChatColor.GOLD).append("** ");
+                    } else if (playerRank.equalsIgnoreCase("moderator")) {
+                        playerString.append(ChatColor.GOLD).append("* ");
+                    }
+                }
+
+                playerString.append(playerName);
+                offlinePlayersJoiner.add(playerString.toString());
+            }
+        }
+
+        player.sendMessage(ChatColor.YELLOW + "Players Offline: " + offlineMembers + "/" + totalMembers);
+        player.sendMessage(ChatColor.YELLOW + offlinePlayersJoiner.toString());
 
         return true;
     }
 }
+	
