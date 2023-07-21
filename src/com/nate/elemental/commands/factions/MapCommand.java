@@ -11,8 +11,8 @@ import com.nate.elemental.utils.storage.h2.Database;
 
 public class MapCommand implements CommandExecutor {
     private final Database database;
-    private final int chunkSizeX = 10;
-    private final int chunkSizeZ = 14;
+    private final int chunkSizeX = 16;
+    private final int chunkSizeZ = 10;
 
     public MapCommand(Database database) {
         this.database = database;
@@ -74,7 +74,7 @@ public class MapCommand implements CommandExecutor {
     private char getFactionChar(String factionName) {
         char factionChar = factionName.charAt(0);
         if (!Character.isLetter(factionChar)) {
-            factionChar = '#'; // Use '#' for factions with non-letter names
+            factionChar = '#';
         }
         return factionChar;
     }
