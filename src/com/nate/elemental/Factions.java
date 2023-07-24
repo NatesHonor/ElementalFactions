@@ -31,6 +31,7 @@ import com.nate.elemental.commands.factions.MapCommand;
 import com.nate.elemental.commands.factions.PromoteCommand;
 import com.nate.elemental.commands.factions.SettingsCommand;
 import com.nate.elemental.commands.factions.ShowCommand;
+import com.nate.elemental.commands.items.TrenchPickaxe;
 import com.nate.elemental.commands.shops.ElixirCommand;
 import com.nate.elemental.commands.shops.HorseCommand;
 import com.nate.elemental.commands.shops.RaidShopCommand;
@@ -43,6 +44,7 @@ import com.nate.elemental.utils.events.PlayerDeathListener;
 import com.nate.elemental.utils.shops.spawner.SpawnerBreakListener;
 import com.nate.elemental.utils.shops.spawner.SpawnerPlaceListener;
 import com.nate.elemental.utils.shops.spawner.SpawnerSpawnListener;
+
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionsTable;
 
@@ -54,7 +56,6 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     private Economy economy;
     boolean usePackets = false;
     private static FileConfiguration messagesConfig;
-    private FileConfiguration config;
     private File configFile;
 
     public static Factions getInstance() {
@@ -101,6 +102,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         PlayerDeathListener playerDeathListener = new PlayerDeathListener(database, this);
         SettingsCommand settingsCommand = new SettingsCommand();
         SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
+        TrenchPickaxe trenchPickaxe = new TrenchPickaxe();
 
         getCommand("f").setExecutor(this);
         getCommand("horse").setExecutor(horseCommand);
@@ -124,8 +126,8 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         getServer().getPluginManager().registerEvents(playerDeathListener, this);
         getServer().getPluginManager().registerEvents(spawnerSpawnListener, this);
 
-        // Remove this line since you are already using the configFile object
-        // new File(getDataFolder(), "messages.yml");
+        // new File(getDataFolder(), "messages.yml"); just incase I need this later and
+        // the below is deleted/moved
         configFile = new File(getDataFolder(), "messages.yml");
         messagesConfig = YamlConfiguration.loadConfiguration(configFile);
 
@@ -136,7 +138,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         if (messagesConfig == null) {
             getLogger().severe("messagesConfig is null!");
         } else {
-            getLogger().info("messagesConfig loaded successfully.");
+            getLogger().info("Messages.yml loaded successfully.");
         }
         String helpMessagePath = "Help-Message";
         getLogger().info("Help message section exists: " + messagesConfig.isConfigurationSection(helpMessagePath));
@@ -153,11 +155,6 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             database.addPlayer(playerName, "wilderness", 10, 10);
             Bukkit.getLogger().info(playerName + ": wilderness power: 10 chunks: 10");
         }
-    }
-
-    private FileConfiguration getConfig(String fileName) {
-        File configFile = new File(getDataFolder(), fileName);
-        return YamlConfiguration.loadConfiguration(configFile);
     }
 
     private String getMessage(String key, String defaultValue) {
