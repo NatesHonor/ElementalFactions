@@ -27,6 +27,9 @@ commands:
   spawnershop:
     description: Opens the Spawner Shop
     usage: /spawnershop
+  trenchpickaxe:
+    description: Gives a user a trench pickaxe
+    usage: /trenchpickaxe
   debug-h2:
     description: Debug an h2 Table
     usage: /debug-h2 table
