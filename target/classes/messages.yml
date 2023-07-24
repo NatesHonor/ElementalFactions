@@ -1,0 +1,58 @@
+# Messages.yml for Factions
+
+# Help messages
+Help-Message:
+  usage:
+    - "&e/f &7- Main faction command."
+    - "&e/f create <name> &7- Create a faction with the specified name."
+    - "&e/f desc <description> &7- Set the description of your faction."
+    - "&e/f list &7- List all the factions on the server."
+    - "&e/f show &7- Show information about your faction."
+    - "&e/f disband &7- Disband your faction."
+    - "&e/f claim &7- Claim the land for your faction."
+    - "&e/f map &7- Show a map of claimed land."
+    - "&e/f ally <faction> &7- Send an ally request to another faction."
+    - "&e/f settings &7- Manage faction settings."
+    - "&e/f promote (user) &7- Promote a faction member to officer or leader."
+    - "&e/f invite &7- Invite a player to join your faction."
+    - "&e/f accept &7- Accept a faction invitation."
+
+
+# Error messages
+Error:
+  no-permission: "&cYou don't have permission to use this command."
+  player-only: "&cThis command can only be used by players."
+  invalid-arguments: "&cInvalid arguments. Usage: %usage%"
+  faction-not-found: "&cFaction not found."
+  faction-exists: "&cA faction with that name already exists."
+  not-in-faction: "&cYou are not in a faction."
+  not-officer-leader: "&cYou must be an officer or leader to use this command."
+  already-in-faction: "&cYou are already in a faction."
+  player-not-found: "&cPlayer not found."
+  not-invited: "&cYou have not been invited to any faction."
+
+# Faction-related messages
+Faction:
+  create-success: "&aFaction created successfully!"
+  description-set: "&aFaction description set successfully!"
+  disband-success: "&aFaction disbanded successfully!"
+  claim-success: "&aLand claimed successfully!"
+  map-header: "&6Faction Map"
+  map-claimed: "&2C"
+  map-unclaimed: "&7-"
+  map-your-faction: "&cY"
+  map-enemy-faction: "&4E"
+  map-border: "&bB"
+  promote-success: "&aPlayer promoted successfully!"
+  ally-request-sent: "&aAlly request sent to %faction%."
+  ally-request-received: "&aYou have received an ally request from %faction%. Use '/f ally accept %faction%' to accept."
+  ally-request-accepted: "&aFaction %faction% is now your ally!"
+  ally-request-declined: "&cFaction %faction% declined your ally request."
+  invite-sent: "&aYou have invited %player% to join your faction."
+  invite-received: "&aYou have been invited to join %faction%. Use '/f accept' to accept the invitation."
+  invite-accepted: "&aYou have joined %faction%."
+  invite-declined: "&cYou declined the invitation to join %faction%."
+
+# Other messages
+Misc:
+  plugin-reloaded: "&aPlugin reloaded successfully."

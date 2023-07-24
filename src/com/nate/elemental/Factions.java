@@ -52,15 +52,15 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     private static String url;
     private static Factions instance;
     private Economy economy;
-	boolean usePackets = false;
+    boolean usePackets = false;
     private static FileConfiguration messagesConfig;
     private FileConfiguration config;
     private File configFile;
-    
+
     public static Factions getInstance() {
         return instance;
     }
-    
+
     @Override
     public void onEnable() {
         instance = this;
@@ -143,8 +143,6 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
 
     }
 
-
-    
     @EventHandler
     public void createPlayerOnJoin(PlayerJoinEvent e) {
         Database database = new Database();
@@ -156,7 +154,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             Bukkit.getLogger().info(playerName + ": wilderness power: 10 chunks: 10");
         }
     }
-    
+
     private FileConfiguration getConfig(String fileName) {
         File configFile = new File(getDataFolder(), fileName);
         return YamlConfiguration.loadConfiguration(configFile);
@@ -165,15 +163,15 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
     private String getMessage(String key, String defaultValue) {
         return ChatColor.translateAlternateColorCodes('&', messagesConfig.getString(key, defaultValue));
     }
-    
 
     public static String getConnectionURL() {
         if (url == null) {
-            url = "jdbc:h2:" + Factions.instance.getDataFolder().getAbsolutePath() + "\\Factions";;
+            url = "jdbc:h2:" + Factions.instance.getDataFolder().getAbsolutePath() + "\\Factions";
+            ;
         }
-        return url;	
+        return url;
     }
-    
+
     private boolean setupEconomy() {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -199,10 +197,11 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                 String helpMessagePath = "Help-Message";
                 if (messagesConfig.isConfigurationSection(helpMessagePath)) {
                     for (String key : messagesConfig.getConfigurationSection(helpMessagePath).getKeys(false)) {
-                        String[] helpMessages = messagesConfig.getStringList(helpMessagePath + "." + key).toArray(new String[0]);
+                        String[] helpMessages = messagesConfig.getStringList(helpMessagePath + "." + key)
+                                .toArray(new String[0]);
                         for (String helpMessage : helpMessages) {
                             sender.sendMessage(getMessage(key, helpMessage));
-                     
+
                         }
                     }
                 } else {
@@ -212,6 +211,21 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
             } else if (args.length >= 1) {
                 String subCommand = args[0].toLowerCase();
                 switch (subCommand) {
+                    case "help":
+                        String helpMessagePath = "Help-Message";
+                        if (messagesConfig.isConfigurationSection(helpMessagePath)) {
+                            for (String key : messagesConfig.getConfigurationSection(helpMessagePath).getKeys(false)) {
+                                String[] helpMessages = messagesConfig.getStringList(helpMessagePath + "." + key)
+                                        .toArray(new String[0]);
+                                for (String helpMessage : helpMessages) {
+                                    sender.sendMessage(getMessage(key, helpMessage));
+
+                                }
+                            }
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "No help message found for this command.");
+                        }
+                        break;
                     case "ally":
                         if (args.length >= 2) {
                             AllyCommand allyCommand = new AllyCommand();
@@ -307,10 +321,10 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         }
         return false;
     }
-    
+
     @Override
     public void onDisable() {
 
     }
-    
+
 }
