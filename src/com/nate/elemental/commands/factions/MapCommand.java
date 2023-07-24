@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 
 import com.nate.elemental.utils.storage.h2.Database;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapCommand implements CommandExecutor {
     private final Database database;
     private final int chunkSizeX = 16;
@@ -36,6 +39,9 @@ public class MapCommand implements CommandExecutor {
 
         StringBuilder mapBuilder = new StringBuilder();
 
+        Map<String, ChatColor> factionColors = new HashMap<>(); // Store faction colors
+        int colorIndex = 0;
+
         for (int z = startZ; z < startZ + chunkSizeZ; z++) {
             StringBuilder line = new StringBuilder();
             for (int x = startX; x < startX + chunkSizeX; x++) {
@@ -46,12 +52,20 @@ public class MapCommand implements CommandExecutor {
                     String factionName = database.getFactionNameByChunk(chunkKey);
                     char factionChar = getFactionChar(factionName);
 
+                    if (!factionColors.containsKey(factionName)) {
+                        ChatColor factionColor = getColorForIndex(colorIndex);
+                        factionColors.put(factionName, factionColor);
+                        colorIndex++;
+                    }
+
+                    ChatColor factionColor = factionColors.get(factionName);
+
                     if (x == playerChunkX && z == playerChunkZ) {
                         line.append(ChatColor.RED + "/" + ChatColor.RESET);
                     } else if (factionName.equals(database.getUserFactionName(player.getName()))) {
-                        line.append(ChatColor.GREEN).append(factionChar);
+                        line.append(factionColor).append(factionChar).append(ChatColor.RESET);
                     } else {
-                        line.append(factionChar);
+                        line.append(factionColor).append(factionChar).append(ChatColor.RESET);
                     }
                 } else {
                     line.append("/");
@@ -62,7 +76,15 @@ public class MapCommand implements CommandExecutor {
 
         player.sendMessage(mapBuilder.toString());
 
-        sendFactionKey(player);
+        // Display faction key based on currently displayed faction
+        String displayedFactionName = database.getFactionNameByChunk(getChunkKey(player.getLocation().getChunk()));
+        if (displayedFactionName != null) {
+            player.sendMessage(ChatColor.YELLOW + "Faction Key:");
+            for (String factionName : factionColors.keySet()) {
+                ChatColor factionColor = factionColors.get(factionName);
+                player.sendMessage(factionColor + factionName + ": " + getFactionChar(factionName) + ChatColor.RESET);
+            }
+        }
 
         return true;
     }
@@ -79,10 +101,13 @@ public class MapCommand implements CommandExecutor {
         return factionChar;
     }
 
-    private void sendFactionKey(Player player) {
-        player.sendMessage(ChatColor.YELLOW + "Faction Key:");
-        player.sendMessage(ChatColor.YELLOW + "A: Faction A");
-        player.sendMessage(ChatColor.YELLOW + "B: Faction B");
-        player.sendMessage(ChatColor.YELLOW + "C: Faction C");
+    private ChatColor getColorForIndex(int index) {
+        ChatColor[] colors = {
+                ChatColor.RED, ChatColor.BLUE, ChatColor.GREEN, ChatColor.YELLOW,
+                ChatColor.GOLD, ChatColor.LIGHT_PURPLE, ChatColor.AQUA, ChatColor.WHITE
+                // Add more colors as needed
+        };
+
+        return colors[index % colors.length];
     }
 }

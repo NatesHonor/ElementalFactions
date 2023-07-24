@@ -52,7 +52,7 @@ public class ClaimCommand implements CommandExecutor, Listener {
             factionName = "Wilderness";
         }
 
-        if (args.length > 0 && args[1].equalsIgnoreCase("auto")) {
+        if (args.length > 1 && args[1].equalsIgnoreCase("auto")) {
             player.sendMessage(ChatColor.GREEN + "Enabling auto claim...");
             chunkutils.setAutoClaiming(player, true);
             return true;
