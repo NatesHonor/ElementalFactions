@@ -117,5 +117,5 @@ Contributions to Elemental Factions are welcome! If you have any improvements, b
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Restrictive View-Only License](LICENSE).
 
