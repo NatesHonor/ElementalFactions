@@ -110,7 +110,9 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         getCommand("debug-h2").setExecutor(new Debug());
         getCommand("raidshop").setExecutor(raidShopCommand);
         getCommand("spawnershop").setExecutor(spawnerShopCommand);
+        getCommand("trenchpickaxe").setExecutor(trenchPickaxe);
 
+        getServer().getPluginManager().registerEvents(trenchPickaxe, this);
         getServer().getPluginManager().registerEvents(settingsCommand, this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(fireballItem, this);
