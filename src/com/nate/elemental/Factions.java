@@ -130,6 +130,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         getServer().getPluginManager().registerEvents(spawnerBreakListener, this);
         getServer().getPluginManager().registerEvents(playerDeathListener, this);
         getServer().getPluginManager().registerEvents(spawnerSpawnListener, this);
+        getServer().getPluginManager().registerEvents(genBukkit, this);
 
         // new File(getDataFolder(), "messages.yml"); just incase I need this later and
         // the below is deleted/moved
