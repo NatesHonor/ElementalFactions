@@ -33,6 +33,7 @@ import com.nate.elemental.commands.factions.SettingsCommand;
 import com.nate.elemental.commands.factions.ShowCommand;
 import com.nate.elemental.commands.items.TrenchPickaxe;
 import com.nate.elemental.commands.shops.ElixirCommand;
+import com.nate.elemental.commands.shops.GenBukkit;
 import com.nate.elemental.commands.shops.HorseCommand;
 import com.nate.elemental.commands.shops.RaidShopCommand;
 import com.nate.elemental.commands.shops.SpawnerShopCommand;
@@ -103,6 +104,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         SettingsCommand settingsCommand = new SettingsCommand();
         SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
         TrenchPickaxe trenchPickaxe = new TrenchPickaxe();
+        GenBukkit genBukkit = new GenBukkit();
 
         getCommand("f").setExecutor(this);
         getCommand("horse").setExecutor(horseCommand);
@@ -111,6 +113,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         getCommand("raidshop").setExecutor(raidShopCommand);
         getCommand("spawnershop").setExecutor(spawnerShopCommand);
         getCommand("trenchpickaxe").setExecutor(trenchPickaxe);
+        getCommand("genbukkit").setExecutor(genBukkit);
 
         getServer().getPluginManager().registerEvents(trenchPickaxe, this);
         getServer().getPluginManager().registerEvents(settingsCommand, this);
