@@ -104,7 +104,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         SettingsCommand settingsCommand = new SettingsCommand();
         SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
         TrenchPickaxe trenchPickaxe = new TrenchPickaxe();
-        GenBukkit genBukkit = new GenBukkit();
+        GenBukkit genBukkit = new GenBukkit(this);
 
         getCommand("f").setExecutor(this);
         getCommand("horse").setExecutor(horseCommand);

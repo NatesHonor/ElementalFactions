@@ -17,6 +17,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.nate.elemental.Factions;
+
 import java.util.Arrays;
 
 public class GenBukkit implements CommandExecutor, Listener {
@@ -24,6 +26,12 @@ public class GenBukkit implements CommandExecutor, Listener {
     private static final String MAIN_MENU_TITLE = "GenBukkit Options";
     private static final String VERTICAL_OPTION = "Vertical GenBukkits";
     private static final String HORIZONTAL_OPTION = "Horizontal GenBukkit";
+
+    private final Factions plugin;
+
+    public GenBukkit(Factions plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -76,13 +84,15 @@ public class GenBukkit implements CommandExecutor, Listener {
                 String displayName = clickedItem.getItemMeta().getDisplayName();
                 if (displayName != null) {
                     if (displayName.equals(ChatColor.YELLOW + VERTICAL_OPTION)) {
+                        // Store the player's selection for later use
                         player.setMetadata("genbukkitOption",
-                                new org.bukkit.metadata.FixedMetadataValue(null, "vertical"));
+                                new org.bukkit.metadata.FixedMetadataValue(plugin, "vertical"));
                         player.closeInventory();
                         player.sendMessage(ChatColor.GREEN + "Selected Vertical GenBukkits.");
                     } else if (displayName.equals(ChatColor.YELLOW + HORIZONTAL_OPTION)) {
+                        // Store the player's selection for later use
                         player.setMetadata("genbukkitOption",
-                                new org.bukkit.metadata.FixedMetadataValue(null, "horizontal"));
+                                new org.bukkit.metadata.FixedMetadataValue(plugin, "horizontal"));
                         player.closeInventory();
                         player.sendMessage(ChatColor.GREEN + "Selected Horizontal GenBukkit.");
                     }
