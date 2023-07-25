@@ -61,7 +61,7 @@ public class ClaimCommand implements CommandExecutor, Listener {
         int availableChunks = chunkutils.getAvailableChunksForFaction(factionName);
 
         if (availableChunks < requiredChunks) {
-            player.sendMessage(ChatColor.RED + "You don't have enough chunks to claim this land.");
+            player.sendMessage(ChatColor.RED + "You don't have enough power to claim this land.");
             return true;
         }
 
@@ -83,7 +83,10 @@ public class ClaimCommand implements CommandExecutor, Listener {
     private void displayFactionInformation(Player player, String factionName) {
         String factionDescription = database.getFactionDescription(factionName);
 
-        player.sendTitle(ChatColor.GREEN + factionName, factionDescription, 0, 80, 20);
+        int claimedChunks = chunkutils.getClaimedChunksForFaction(factionName);
+        String landInfo = "Land: " + claimedChunks + " chunks claimed";
+
+        player.sendTitle(ChatColor.GREEN + factionName, factionDescription + "\n" + landInfo, 0, 80, 20);
 
         new BukkitRunnable() {
             @Override

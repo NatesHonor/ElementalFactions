@@ -1,5 +1,6 @@
 package com.nate.elemental.commands.items;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,6 +30,23 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
         }
 
         Player player = (Player) sender;
+
+        if (args.length == 0) {
+            giveTrenchPickaxe(player, 3, -1); // Default size is 3x3, infinite uses
+            return true;
+        }
+
+        if (args.length == 1) {
+            // Check if the argument is a player name
+            Player targetPlayer = Bukkit.getPlayer(args[0]);
+            if (targetPlayer != null && targetPlayer.isOnline()) {
+                giveTrenchPickaxe(targetPlayer, 3, -1); // Default size is 3x3, infinite uses
+                player.sendMessage("§aYou gave a §6Trench Pickaxe §e⛏️ §ato " + targetPlayer.getName());
+            } else {
+                player.sendMessage("§cPlayer not found or offline.");
+            }
+            return true;
+        }
 
         int size = 3; // Default size is 3x3
         int uses = -1; // -1 means infinite uses
@@ -67,14 +85,20 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
     private void giveTrenchPickaxe(Player player, int size, int uses) {
         ItemStack trenchPickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
         ItemMeta meta = trenchPickaxe.getItemMeta();
-        meta.setDisplayName("Trench Pickaxe");
-        meta.setLore(Arrays.asList("Size: " + size + "x" + size, "Uses: " + (uses == -1 ? "Infinite" : uses)));
+        meta.setDisplayName("§6Trench Pickaxe §e⛏️");
+        meta.setLore(Arrays.asList("§7Size: §e" + size + "x" + size,
+                "§7Uses: " + (uses == -1 ? "§eInfinite" : "§e" + uses)));
         trenchPickaxe.setItemMeta(meta);
 
-        player.getInventory().addItem(trenchPickaxe);
-
-        player.sendMessage("You received a Trench Pickaxe with size " + size + "x" + size +
-                (uses == -1 ? " (Infinite uses)." : " and " + uses + " uses."));
+        if (player.getInventory().firstEmpty() != -1) {
+            player.getInventory().addItem(trenchPickaxe);
+            player.sendMessage("§aYou received a §6Trench Pickaxe §e⛏️§a with size §e" + size + "x" + size +
+                    (uses == -1 ? "§a (Infinite uses)." : "§a and §e" + uses + "§a uses."));
+        } else {
+            player.getWorld().dropItemNaturally(player.getLocation(), trenchPickaxe);
+            player.sendMessage("§aYou received a §6Trench Pickaxe §e⛏️§a with size §e" + size + "x" + size +
+                    (uses == -1 ? "§a (Infinite uses)." : "§a and §e" + uses + "§a uses."));
+        }
     }
 
     private void mineArea(Player player, Location location, int size) {
@@ -97,14 +121,14 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand != null && itemInHand.getType() == Material.DIAMOND_PICKAXE
                 && itemInHand.getItemMeta() != null
-                && itemInHand.getItemMeta().getDisplayName().equals("Trench Pickaxe")) {
+                && itemInHand.getItemMeta().getDisplayName().equals("§6Trench Pickaxe §e⛏️")) {
 
             ItemMeta meta = itemInHand.getItemMeta();
             if (meta.hasLore()) {
                 List<String> lore = meta.getLore();
                 for (String line : lore) {
-                    if (line.startsWith("Size: ")) {
-                        int size = Integer.parseInt(line.substring(6).split("x")[0]);
+                    if (line.startsWith("§7Size: ")) {
+                        int size = Integer.parseInt(line.substring(7).split("x")[0]);
                         mineArea(player, event.getBlock().getLocation(), size);
                         break;
                     }

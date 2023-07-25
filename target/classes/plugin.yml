@@ -1,5 +1,5 @@
 name: ElementalFactions
-version: 4.0
+version: 4.0.1
 main: com.nate.elemental.Factions
 author: NatesHonor
 website: https://inate.xyz
@@ -9,12 +9,33 @@ commands:
   f:
     description: Default factions command
     usage: /f help
+  f help:
+    description: Displays the help messages
+    usage: /f help
   f show:
     description: Shows information on a faction
     usage: /f show <faction> (optional)
   f create:
     description: Creates a new faction
     usage: /f create <faction>
+  f desc:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
+  f accept:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
+  f ally:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
+  f claim:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
+  f enemy:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
+  f invite:
+    description: Shows information on a faction
+    usage: /f show <faction> (optional)
   horse: 
     description: Opens the Horse GUI
     usage: /horse

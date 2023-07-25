@@ -12,7 +12,8 @@ public class Chunkutils {
     public void setAutoClaiming(Player player, boolean value) {
         String playerName = player.getName();
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE users SET auto_claiming = ? WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("UPDATE users SET auto_claiming = ? WHERE name = ?")) {
             statement.setBoolean(1, value);
             statement.setString(2, playerName);
             statement.executeUpdate();
@@ -24,7 +25,8 @@ public class Chunkutils {
     public boolean isAutoClaiming(Player player) {
         String playerName = player.getName();
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT auto_claiming FROM users WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("SELECT auto_claiming FROM users WHERE name = ?")) {
             statement.setString(1, playerName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -40,7 +42,8 @@ public class Chunkutils {
 
     public int getAvailableChunksForFaction(String factionName) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT chunks FROM factions WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("SELECT chunks FROM factions WHERE name = ?")) {
             statement.setString(1, factionName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -56,7 +59,8 @@ public class Chunkutils {
 
     public void updateAvailableChunksForFaction(String factionName, int chunks) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE factions SET chunks = ? WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("UPDATE factions SET chunks = ? WHERE name = ?")) {
             statement.setInt(1, chunks);
             statement.setString(2, factionName);
             statement.executeUpdate();
@@ -64,10 +68,11 @@ public class Chunkutils {
             e.printStackTrace();
         }
     }
-    
+
     public int getFactionChunks(String factionName) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT chunks FROM factions WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("SELECT chunks FROM factions WHERE name = ?")) {
             statement.setString(1, factionName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -83,7 +88,7 @@ public class Chunkutils {
 
     public int getUserChunks(String playerName) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT chunks FROM users WHERE name = ?")) {
+                PreparedStatement statement = connection.prepareStatement("SELECT chunks FROM users WHERE name = ?")) {
             statement.setString(1, playerName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -97,9 +102,25 @@ public class Chunkutils {
         return 0;
     }
 
+    public int getClaimedChunksForFaction(String factionName) {
+        int claimedChunks = 0;
+        try (Connection connection = DatabaseConnection.getConnection();
+                PreparedStatement statement = connection
+                        .prepareStatement("SELECT COUNT(*) FROM chunks WHERE faction = ?")) {
+            statement.setString(1, factionName);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                claimedChunks = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return claimedChunks;
+    }
+
     public int getUserPower(String playerName) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT power FROM users WHERE name = ?")) {
+                PreparedStatement statement = connection.prepareStatement("SELECT power FROM users WHERE name = ?")) {
             statement.setString(1, playerName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -115,7 +136,8 @@ public class Chunkutils {
 
     public void updateFactionChunks(String factionName, int newChunks) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE factions SET chunks = ? WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("UPDATE factions SET chunks = ? WHERE name = ?")) {
             statement.setInt(1, newChunks);
             statement.setString(2, factionName);
             statement.executeUpdate();
@@ -126,7 +148,8 @@ public class Chunkutils {
 
     public void updateFactionPower(String factionName, int newPower) {
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("UPDATE factions SET power = ? WHERE name = ?")) {
+                PreparedStatement statement = connection
+                        .prepareStatement("UPDATE factions SET power = ? WHERE name = ?")) {
             statement.setInt(1, newPower);
             statement.setString(2, factionName);
             statement.executeUpdate();
