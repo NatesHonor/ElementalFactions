@@ -84,13 +84,10 @@ public class GenBukkit implements CommandExecutor, Listener {
                 String displayName = clickedItem.getItemMeta().getDisplayName();
                 if (displayName != null) {
                     if (displayName.equals(ChatColor.YELLOW + VERTICAL_OPTION)) {
-                        // Store the player's selection for later use
                         player.setMetadata("genbukkitOption",
                                 new org.bukkit.metadata.FixedMetadataValue(plugin, "vertical"));
-                        player.closeInventory();
-                        player.sendMessage(ChatColor.GREEN + "Selected Vertical GenBukkits.");
+                        openVerticalGenBukkitObtainMenu(player);
                     } else if (displayName.equals(ChatColor.YELLOW + HORIZONTAL_OPTION)) {
-                        // Store the player's selection for later use
                         player.setMetadata("genbukkitOption",
                                 new org.bukkit.metadata.FixedMetadataValue(plugin, "horizontal"));
                         player.closeInventory();
@@ -126,7 +123,6 @@ public class GenBukkit implements CommandExecutor, Listener {
                             }
                         }
                     } else if (genbukkitOption.equals("horizontal")) {
-                        // Place obsidian block horizontally from the clicked block
                         // (Implement the horizontal logic here)
                         player.sendMessage(ChatColor.RED + "Horizontal GenBukkit is not implemented yet!");
                     }
@@ -135,5 +131,18 @@ public class GenBukkit implements CommandExecutor, Listener {
                 }
             }
         }
+    }
+
+    private void openVerticalGenBukkitObtainMenu(Player player) {
+        Inventory menu = Bukkit.createInventory(null, 9, "Vertical GenBukkit");
+
+        ItemStack obsidianGenBukkitItem = new ItemStack(Material.OBSIDIAN);
+        ItemMeta obsidianGenBukkitMeta = obsidianGenBukkitItem.getItemMeta();
+        obsidianGenBukkitMeta.setDisplayName(ChatColor.YELLOW + "Obsidian GenBukkit");
+        obsidianGenBukkitItem.setItemMeta(obsidianGenBukkitMeta);
+
+        menu.setItem(4, obsidianGenBukkitItem);
+
+        player.openInventory(menu);
     }
 }
