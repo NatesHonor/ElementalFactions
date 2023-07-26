@@ -52,14 +52,14 @@ public class GenBukkit implements CommandExecutor, Listener {
         ItemStack verticalOption = new ItemStack(Material.OAK_SIGN);
         ItemMeta verticalMeta = verticalOption.getItemMeta();
         verticalMeta.setDisplayName(ChatColor.YELLOW + VERTICAL_OPTION);
-        verticalMeta.setLore(Arrays.asList(ChatColor.GRAY + "Right-click Obsidian GenBukkit",
+        verticalMeta.setLore(Arrays.asList(ChatColor.GRAY + "Right-click Lava Bucket GenBukkit",
                 ChatColor.GRAY + "to place vertically."));
         verticalOption.setItemMeta(verticalMeta);
 
         ItemStack horizontalOption = new ItemStack(Material.SPRUCE_SIGN);
         ItemMeta horizontalMeta = horizontalOption.getItemMeta();
         horizontalMeta.setDisplayName(ChatColor.YELLOW + HORIZONTAL_OPTION);
-        horizontalMeta.setLore(Arrays.asList(ChatColor.GRAY + "Right-click Obsidian GenBukkit",
+        horizontalMeta.setLore(Arrays.asList(ChatColor.GRAY + "Right-click Lava Bucket GenBukkit",
                 ChatColor.GRAY + "to place horizontally."));
         horizontalOption.setItemMeta(horizontalMeta);
 
@@ -105,9 +105,8 @@ public class GenBukkit implements CommandExecutor, Listener {
 
         if (action == Action.RIGHT_CLICK_BLOCK) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
-            if (itemInHand.getType() == Material.OBSIDIAN && itemInHand.getItemMeta() != null
-                    && itemInHand.getItemMeta().hasDisplayName()
-                    && itemInHand.getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Obsidian GenBukkit")) {
+            if (itemInHand.getType() == Material.LAVA_BUCKET && itemInHand.getItemMeta() != null
+                    && itemInHand.getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Lava Bucket GenBukkit")) {
 
                 if (player.hasMetadata("genbukkitOption")) {
                     String genbukkitOption = player.getMetadata("genbukkitOption").get(0).asString();
@@ -136,12 +135,12 @@ public class GenBukkit implements CommandExecutor, Listener {
     private void openVerticalGenBukkitObtainMenu(Player player) {
         Inventory menu = Bukkit.createInventory(null, 9, "Vertical GenBukkit");
 
-        ItemStack obsidianGenBukkitItem = new ItemStack(Material.OBSIDIAN);
-        ItemMeta obsidianGenBukkitMeta = obsidianGenBukkitItem.getItemMeta();
-        obsidianGenBukkitMeta.setDisplayName(ChatColor.YELLOW + "Obsidian GenBukkit");
-        obsidianGenBukkitItem.setItemMeta(obsidianGenBukkitMeta);
+        ItemStack lavaBucketGenBukkitItem = new ItemStack(Material.LAVA_BUCKET);
+        ItemMeta lavaBucketGenBukkitMeta = lavaBucketGenBukkitItem.getItemMeta();
+        lavaBucketGenBukkitMeta.setDisplayName(ChatColor.YELLOW + "Lava Bucket GenBukkit");
+        lavaBucketGenBukkitItem.setItemMeta(lavaBucketGenBukkitMeta);
 
-        menu.setItem(4, obsidianGenBukkitItem);
+        menu.setItem(4, lavaBucketGenBukkitItem);
 
         player.openInventory(menu);
     }
