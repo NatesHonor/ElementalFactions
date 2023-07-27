@@ -6,13 +6,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import com.nate.elemental.utils.storage.h2.Database;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapCommand implements CommandExecutor {
+public class MapCommand implements CommandExecutor, Listener {
     private final Database database;
     private final int chunkSizeX = 16;
     private final int chunkSizeZ = 10;

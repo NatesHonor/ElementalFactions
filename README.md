@@ -31,6 +31,12 @@ Elemental Factions is a plugin for Bukkit/Spigot servers that introduces faction
 - `/spawnershop`: Opens the spawner shop GUI where players can purchase spawners.
 - `/elixir`: Opens the elixir selection GUI where players can obtain custom elixirs.
 - `/horse`: Spawns a horse with upgraded speed.
+- `/trenchpickaxe [playerName]`: Gives the player a Trench Pickaxe with a default size of 3x3.
+
+## Permissions
+
+- `trenchpickaxe.give`: Allows the player to use the `/trenchpickaxe` command to obtain a Trench Pickaxe.
+- `trenchpickaxe.give.others`: Allows the player to use the `/trenchpickaxe` command and give the Trench Pickaxe to another player.
 
 ## How to Use
 
@@ -47,19 +53,19 @@ To add custom elixirs, follow these steps:
 1. Open the `elixirs.yml` file located in the plugin's folder.
 2. Under the `elixirs` section, add a new entry for your elixir using the following format:
 
-
+```yaml
 ElixirName:
-name: "Elixir Name"
-effects:
-
-    "Effect:Duration:Level"
+  name: "Elixir Name"
+  effects:
+    - "Effect:Duration:Level"
+```
 
 
 
 Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` with the desired display name of the elixir, and `"Effect:Duration:Level"` with the desired potion effect, duration, and level. For example, `"Speed:600:3"` adds a Speed effect with a duration of 600 ticks and level 3.
-3. Save the `elixirs.yml` file.
-4. Restart the server or reload the plugin for the changes to take effect.
-5. Players can now find the custom elixir in the elixir selection GUI (`/elixir`) and obtain it by clicking on it.
+1. Save the `elixirs.yml` file.
+2. Restart the server or reload the plugin for the changes to take effect.
+3. Players can now find the custom elixir in the elixir selection GUI (`/elixir`) and obtain it by clicking on it.
 
 ### List of effects:
 
@@ -100,16 +106,6 @@ Replace `ElixirName` with a unique identifier for your elixir, `"Elixir Name"` w
 ### Spawning a Horse with Upgraded Speed
 
 To spawn a horse with upgraded speed, use the `/horse` command. When executed, a horse with increased speed will be spawned at your location. Please note that the horse can only be spawned once every 5 minutes.
-
-## Changelog
-
-- Added `/f ally <factionName>` command to send an alliance request to another faction.
-- Added `/f ally accept <factionName>` command to accept an alliance request from another faction.
-- Added `/f enemy <factionName>` command to declare another faction as an enemy.
-- Added a timer of 5 minutes before a raid horse can be spawned again.
-- Updated the `show` command to display allies with their faction names and count.
-- Fixed issues with ally invitation and acceptance functionality.
-- General bug fixes and improvements.
 
 ## Contributing
 

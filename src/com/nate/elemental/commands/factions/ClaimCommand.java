@@ -21,8 +21,8 @@ public class ClaimCommand implements CommandExecutor, Listener {
     private final Chunkutils chunkutils;
     private final int requiredChunks;
 
-    public ClaimCommand(Factions plugin) {
-        this.plugin = plugin;
+    public ClaimCommand() {
+        this.plugin = Factions.getInstance();
         this.database = new Database();
         this.chunkutils = new Chunkutils();
         this.requiredChunks = 1;

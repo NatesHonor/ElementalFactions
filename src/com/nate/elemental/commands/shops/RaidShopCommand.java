@@ -27,8 +27,8 @@ import net.milkbowl.vault.economy.Economy;
 public class RaidShopCommand implements CommandExecutor, Listener {
     private final Factions plugin;
 
-    public RaidShopCommand(Factions factions) {
-        this.plugin = factions;
+    public RaidShopCommand() {
+        this.plugin = Factions.getInstance();
     }
 
     @Override

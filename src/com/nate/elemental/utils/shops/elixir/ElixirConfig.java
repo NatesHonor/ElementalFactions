@@ -19,8 +19,8 @@ public class ElixirConfig {
     private final FileConfiguration config;
     private final File configFile;
 
-    public ElixirConfig(Factions plugin) {
-        this.plugin = plugin;
+    public ElixirConfig() {
+        this.plugin = Factions.getInstance();
         this.configFile = new File(plugin.getDataFolder(), "elixirs.yml");
         this.config = YamlConfiguration.loadConfiguration(configFile);
         if (!configFile.exists()) {
@@ -73,8 +73,6 @@ public class ElixirConfig {
         return null;
     }
 
-
-
     public boolean saveElixir(Elixir elixir) {
         ConfigurationSection section = config.getConfigurationSection("elixirs");
         if (section == null) {
@@ -84,7 +82,8 @@ public class ElixirConfig {
         elixirSection.set("name", elixir.getName());
         List<String> effects = new ArrayList<>();
         for (PotionEffect effect : elixir.getEffects()) {
-            String effectString = effect.getType().getName() + ":" + (effect.getAmplifier() + 1) + ":" + effect.getDuration();
+            String effectString = effect.getType().getName() + ":" + (effect.getAmplifier() + 1) + ":"
+                    + effect.getDuration();
             effects.add(effectString);
         }
         elixirSection.set("effects", effects);

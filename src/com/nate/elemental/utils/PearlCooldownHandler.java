@@ -18,10 +18,10 @@ import com.nate.elemental.Factions;
 public class PearlCooldownHandler implements Listener {
     private final Map<UUID, Long> pearlCooldowns;
     private final Factions plugin;
-    
-    public PearlCooldownHandler(Factions plugin) {
+
+    public PearlCooldownHandler() {
         this.pearlCooldowns = new HashMap<>();
-        this.plugin = plugin;
+        this.plugin = Factions.getInstance();
     }
 
     @EventHandler

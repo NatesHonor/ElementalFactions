@@ -83,7 +83,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         }
 
         Database database = new Database();
-        GainPlayerPower gainPlayerPower = new GainPlayerPower(database, this);
+        GainPlayerPower gainPlayerPower = new GainPlayerPower(database);
 
         gainPlayerPower.enablePowerUpdates();
         FactionsTable.createTables();
@@ -91,20 +91,20 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         boolean canFireballExplode = true;
 
         HorseCommand horseCommand = new HorseCommand();
-        ElixirCommand elixirCommand = new ElixirCommand(this);
-        ClaimCommand claimCommand = new ClaimCommand(this);
-        RaidShopCommand raidShopCommand = new RaidShopCommand(this);
+        ElixirCommand elixirCommand = new ElixirCommand();
+        ClaimCommand claimCommand = new ClaimCommand();
+        RaidShopCommand raidShopCommand = new RaidShopCommand();
         SpawnerShopCommand spawnerShopCommand = new SpawnerShopCommand(this);
         SpawnerPlaceListener spawnerPlaceListener = new SpawnerPlaceListener();
         SpawnerBreakListener spawnerBreakListener = new SpawnerBreakListener();
         FireballItem fireballItem = new FireballItem(this, canFireballExplode);
         CombatTagHandler combatTagHandler = new CombatTagHandler();
-        PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler(this);
-        PlayerDeathListener playerDeathListener = new PlayerDeathListener(database, this);
+        PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler();
+        PlayerDeathListener playerDeathListener = new PlayerDeathListener(database);
         SettingsCommand settingsCommand = new SettingsCommand();
         SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
         TrenchPickaxe trenchPickaxe = new TrenchPickaxe();
-        GenBukkit genBukkit = new GenBukkit(this);
+        GenBukkit genBukkit = new GenBukkit();
 
         getCommand("f").setExecutor(this);
         getCommand("horse").setExecutor(horseCommand);
@@ -258,7 +258,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                         break;
                     case "list":
                         if (args.length >= 1) {
-                            ListFactions listCommand = new ListFactions(this);
+                            ListFactions listCommand = new ListFactions();
                             listCommand.onCommand(sender, command, label, args);
                             return true;
                         }
@@ -279,7 +279,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                         break;
                     case "disband":
                         if (args.length >= 1) {
-                            DisbandCommand disbandCommand = new DisbandCommand(this);
+                            DisbandCommand disbandCommand = new DisbandCommand();
                             disbandCommand.onCommand(sender, command, label, args);
                         } else {
                             sender.sendMessage(getMessage("usage.disband", "&cUsage: /f disband"));
@@ -287,7 +287,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                         break;
                     case "claim":
                         if (args.length >= 1) {
-                            ClaimCommand claimCommand = new ClaimCommand(this);
+                            ClaimCommand claimCommand = new ClaimCommand();
                             claimCommand.onCommand(sender, command, label, args);
                         }
                         break;
@@ -312,7 +312,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
                         acceptCommand.onCommand(sender, command, label, args);
                         break;
                     case "invite":
-                        InviteCommand inviteCommand = new InviteCommand(this);
+                        InviteCommand inviteCommand = new InviteCommand();
                         inviteCommand.onCommand(sender, command, label, args);
                         break;
                     default:

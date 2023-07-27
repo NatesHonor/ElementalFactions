@@ -5,13 +5,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionUtils;
 
 import java.util.Arrays;
 
-public class DescCommand implements CommandExecutor {
+public class DescCommand implements CommandExecutor, Listener {
     private final Database database;
     private static final int MAX_DESCRIPTION_LENGTH = 200;
 
@@ -35,7 +36,8 @@ public class DescCommand implements CommandExecutor {
         String[] descriptionArgs = Arrays.copyOfRange(args, 1, args.length);
         String description = String.join(" ", descriptionArgs);
         if (description.length() > MAX_DESCRIPTION_LENGTH) {
-            player.sendMessage(ChatColor.RED + "The faction description cannot exceed " + MAX_DESCRIPTION_LENGTH + " characters.");
+            player.sendMessage(
+                    ChatColor.RED + "The faction description cannot exceed " + MAX_DESCRIPTION_LENGTH + " characters.");
             return true;
         }
 

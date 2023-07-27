@@ -5,11 +5,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionsTable;
 
-public class CreateFactionCommand implements CommandExecutor {
+public class CreateFactionCommand implements CommandExecutor, Listener {
 
     private Database database;
 
@@ -53,6 +54,5 @@ public class CreateFactionCommand implements CommandExecutor {
         }
 
         return true;
-    } 
+    }
 }
-

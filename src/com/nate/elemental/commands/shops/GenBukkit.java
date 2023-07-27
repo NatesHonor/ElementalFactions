@@ -29,8 +29,8 @@ public class GenBukkit implements CommandExecutor, Listener {
 
     private final Factions plugin;
 
-    public GenBukkit(Factions plugin) {
-        this.plugin = plugin;
+    public GenBukkit() {
+        this.plugin = Factions.getInstance();
     }
 
     @Override

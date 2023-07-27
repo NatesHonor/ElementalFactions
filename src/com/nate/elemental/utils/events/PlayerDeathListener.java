@@ -14,11 +14,11 @@ public class PlayerDeathListener implements Listener {
     private final Database database;
     private final UserTable userTable;
     Factions plugin;
-    
-    public PlayerDeathListener(Database database, Factions plugin) {
+
+    public PlayerDeathListener(Database database) {
         this.database = database;
         this.userTable = new UserTable();
-        this.plugin = plugin;
+        this.plugin = Factions.getInstance();
     }
 
     @EventHandler
@@ -27,7 +27,7 @@ public class PlayerDeathListener implements Listener {
         String playerName = player.getName();
 
         userTable.subtractPowerAndChunks(playerName, 3);
-        
+
         int newPower = database.getPlayerPower(playerName);
 
         player.sendMessage("Your power is now " + newPower + "/10");

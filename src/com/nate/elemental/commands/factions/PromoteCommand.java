@@ -5,10 +5,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import com.nate.elemental.utils.storage.h2.Database;
 
-public class PromoteCommand implements CommandExecutor {
+public class PromoteCommand implements CommandExecutor, Listener {
     private final Database database;
 
     public PromoteCommand(Database database) {
@@ -43,23 +44,25 @@ public class PromoteCommand implements CommandExecutor {
         String targetPlayerRank = database.getUserRank(targetPlayerName);
 
         if (playerRank.equals("founder")) {
-        	if (targetPlayerRank.equals("coleader")) {
-                player.sendMessage(ChatColor.RED + "You have already promoted this user faction leader and cannot be promoted.");
+            if (targetPlayerRank.equals("coleader")) {
+                player.sendMessage(
+                        ChatColor.RED + "You have already promoted this user faction leader and cannot be promoted.");
             } else if (targetPlayerRank.equals("moderator")) {
                 database.setUserRank(targetPlayerName, "coleader");
                 player.sendMessage(ChatColor.GREEN + targetPlayerName + " has been promoted to CoLeader.");
             } else if (targetPlayerRank.equals("trusted_member")) {
-                    database.setUserRank(targetPlayerName, "moderator");
-                    player.sendMessage(ChatColor.GREEN + targetPlayerName + " has been promoted to Moderator!.");
-                }	else if (targetPlayerRank.equals("member")) {
-                	database.setUserRank(targetPlayerName, "trusted_member");
-                	player.sendMessage(ChatColor.GREEN + targetPlayerName + " has been promoted to Trusted Member!");
-                }
-        	
+                database.setUserRank(targetPlayerName, "moderator");
+                player.sendMessage(ChatColor.GREEN + targetPlayerName + " has been promoted to Moderator!.");
+            } else if (targetPlayerRank.equals("member")) {
+                database.setUserRank(targetPlayerName, "trusted_member");
+                player.sendMessage(ChatColor.GREEN + targetPlayerName + " has been promoted to Trusted Member!");
+            }
+
         }
- 
+
         if (targetPlayerRank.equals("coleader")) {
-            player.sendMessage(ChatColor.RED + "You have already promoted this user faction leader and cannot be promoted.");
+            player.sendMessage(
+                    ChatColor.RED + "You have already promoted this user faction leader and cannot be promoted.");
         } else if (playerRank.equals("coleader")) {
             player.sendMessage(ChatColor.RED + "As a coleader, you can only promote players to moderator rank.");
         } else if (playerRank.equals("moderator")) {

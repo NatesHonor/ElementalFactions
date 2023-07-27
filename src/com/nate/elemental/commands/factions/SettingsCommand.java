@@ -68,7 +68,8 @@ public class SettingsCommand implements CommandExecutor, Listener {
                 String selectedRank = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
                 this.selectedRank.put(player, selectedRank);
                 player.closeInventory();
-                player.sendMessage(ChatColor.YELLOW + "Please enter what prefix you would like for " + selectedRank + ".");
+                player.sendMessage(
+                        ChatColor.YELLOW + "Please enter what prefix you would like for " + selectedRank + ".");
                 prefixInput.put(player, selectedRank);
             }
         }

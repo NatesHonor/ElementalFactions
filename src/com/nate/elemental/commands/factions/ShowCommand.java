@@ -9,12 +9,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionUtils;
 import com.nate.elemental.utils.storage.h2.TableUtils;
 
-public class ShowCommand implements CommandExecutor {
+public class ShowCommand implements CommandExecutor, Listener {
     private final Database database;
     private final TableUtils tableUtils;
     private final FactionUtils factionUtils;
@@ -83,7 +84,7 @@ public class ShowCommand implements CommandExecutor {
             player.sendMessage(ChatColor.GOLD + allies);
         }
 
-        player.sendMessage(ChatColor.YELLOW + "Online: (" + onlineMembers + "/" + totalMembers + ")" );
+        player.sendMessage(ChatColor.YELLOW + "Online: (" + onlineMembers + "/" + totalMembers + ")");
 
         StringJoiner onlinePlayersJoiner = new StringJoiner(", ");
         StringJoiner offlinePlayersJoiner = new StringJoiner(", ");
@@ -146,4 +147,3 @@ public class ShowCommand implements CommandExecutor {
         return true;
     }
 }
-	

@@ -6,17 +6,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.InvitesTable;
 
-public class InviteCommand implements CommandExecutor {
+public class InviteCommand implements CommandExecutor, Listener {
     private final Factions plugin;
     private final Database database;
     private final InvitesTable invitesTable;
-    public InviteCommand(Factions plugin) {
-        this.plugin = plugin;
+
+    public InviteCommand() {
+        this.plugin = Factions.getInstance();
         this.database = new Database();
         this.invitesTable = new InvitesTable();
     }
@@ -64,7 +66,7 @@ public class InviteCommand implements CommandExecutor {
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (invitesTable.isInvitePending(invitee.getName(), inviter.getName())) {
-            	invitesTable.removeInvite(invitee.getName(), inviter.getName());
+                invitesTable.removeInvite(invitee.getName(), inviter.getName());
                 invitee.sendMessage(ChatColor.RED + "The faction invitation has expired.");
             }
         }, 30 * 20);

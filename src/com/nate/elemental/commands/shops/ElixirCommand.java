@@ -21,15 +21,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 
-import com.nate.elemental.Factions;
 import com.nate.elemental.utils.shops.elixir.ElixirConfig;
 import com.nate.elemental.utils.shops.elixir.ElixirConfig.Elixir;
 
 public class ElixirCommand implements CommandExecutor, Listener {
     private final ElixirConfig elixirConfig;
 
-    public ElixirCommand(Factions factions) {
-        this.elixirConfig = new ElixirConfig(factions);
+    public ElixirCommand() {
+        this.elixirConfig = new ElixirConfig();
     }
 
     @Override
@@ -50,7 +49,8 @@ public class ElixirCommand implements CommandExecutor, Listener {
     }
 
     private Inventory createElixirGUI() {
-        Inventory inventory = Bukkit.createInventory(new ElixirInventoryHolder(), 27, ChatColor.BOLD + "Elixir Selection");
+        Inventory inventory = Bukkit.createInventory(new ElixirInventoryHolder(), 27,
+                ChatColor.BOLD + "Elixir Selection");
 
         List<Elixir> elixirs = elixirConfig.getElixirs();
         for (Elixir elixir : elixirs) {
@@ -76,7 +76,7 @@ public class ElixirCommand implements CommandExecutor, Listener {
 
         inventory.addItem(elixir);
     }
-    
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
@@ -108,8 +108,6 @@ public class ElixirCommand implements CommandExecutor, Listener {
         }
     }
 
-
-    
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack consumedItem = event.getItem();
@@ -126,9 +124,6 @@ public class ElixirCommand implements CommandExecutor, Listener {
             }
         }
     }
-
-
-
 
     private static class ElixirInventoryHolder implements InventoryHolder {
         @Override
