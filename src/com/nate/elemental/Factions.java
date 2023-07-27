@@ -37,14 +37,10 @@ import com.nate.elemental.commands.shops.GenBukkit;
 import com.nate.elemental.commands.shops.HorseCommand;
 import com.nate.elemental.commands.shops.RaidShopCommand;
 import com.nate.elemental.commands.shops.SpawnerShopCommand;
-import com.nate.elemental.items.FireballItem;
-import com.nate.elemental.utils.CombatTagHandler;
-import com.nate.elemental.utils.PearlCooldownHandler;
+
 import com.nate.elemental.utils.events.GainPlayerPower;
-import com.nate.elemental.utils.events.PlayerDeathListener;
-import com.nate.elemental.utils.shops.spawner.SpawnerBreakListener;
-import com.nate.elemental.utils.shops.spawner.SpawnerPlaceListener;
-import com.nate.elemental.utils.shops.spawner.SpawnerSpawnListener;
+
+import com.nate.elemental.utils.registration.RegisterEvents;
 
 import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionsTable;
@@ -88,21 +84,10 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         gainPlayerPower.enablePowerUpdates();
         FactionsTable.createTables();
 
-        boolean canFireballExplode = true;
-
         HorseCommand horseCommand = new HorseCommand();
         ElixirCommand elixirCommand = new ElixirCommand();
-        ClaimCommand claimCommand = new ClaimCommand();
         RaidShopCommand raidShopCommand = new RaidShopCommand();
         SpawnerShopCommand spawnerShopCommand = new SpawnerShopCommand(this);
-        SpawnerPlaceListener spawnerPlaceListener = new SpawnerPlaceListener();
-        SpawnerBreakListener spawnerBreakListener = new SpawnerBreakListener();
-        FireballItem fireballItem = new FireballItem(this, canFireballExplode);
-        CombatTagHandler combatTagHandler = new CombatTagHandler();
-        PearlCooldownHandler pearlCooldownHandler = new PearlCooldownHandler();
-        PlayerDeathListener playerDeathListener = new PlayerDeathListener(database);
-        SettingsCommand settingsCommand = new SettingsCommand();
-        SpawnerSpawnListener spawnerSpawnListener = new SpawnerSpawnListener();
         TrenchPickaxe trenchPickaxe = new TrenchPickaxe();
         GenBukkit genBukkit = new GenBukkit();
 
@@ -115,22 +100,7 @@ public class Factions extends JavaPlugin implements Listener, CommandExecutor {
         getCommand("trenchpickaxe").setExecutor(trenchPickaxe);
         getCommand("genbukkit").setExecutor(genBukkit);
 
-        getServer().getPluginManager().registerEvents(trenchPickaxe, this);
-        getServer().getPluginManager().registerEvents(settingsCommand, this);
-        getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(fireballItem, this);
-        getServer().getPluginManager().registerEvents(claimCommand, this);
-        getServer().getPluginManager().registerEvents(horseCommand, this);
-        getServer().getPluginManager().registerEvents(raidShopCommand, this);
-        getServer().getPluginManager().registerEvents(combatTagHandler, this);
-        getServer().getPluginManager().registerEvents(spawnerShopCommand, this);
-        getServer().getPluginManager().registerEvents(spawnerPlaceListener, this);
-        getServer().getPluginManager().registerEvents(pearlCooldownHandler, this);
-        getServer().getPluginManager().registerEvents(elixirCommand, this);
-        getServer().getPluginManager().registerEvents(spawnerBreakListener, this);
-        getServer().getPluginManager().registerEvents(playerDeathListener, this);
-        getServer().getPluginManager().registerEvents(spawnerSpawnListener, this);
-        getServer().getPluginManager().registerEvents(genBukkit, this);
+        RegisterEvents.register(this);
 
         // new File(getDataFolder(), "messages.yml"); just incase I need this later and
         // the below is deleted/moved
