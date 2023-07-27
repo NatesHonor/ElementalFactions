@@ -121,8 +121,8 @@ public class GenBukkit implements CommandExecutor, Listener {
                                 break;
                             }
                         }
+                        player.getInventory().getItemInMainHand().setType(Material.BUCKET);
                     } else if (genbukkitOption.equals("horizontal")) {
-                        // (Implement the horizontal logic here)
                         player.sendMessage(ChatColor.RED + "Horizontal GenBukkit is not implemented yet!");
                     }
                 } else {
