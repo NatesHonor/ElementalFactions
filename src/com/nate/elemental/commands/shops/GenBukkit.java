@@ -112,16 +112,8 @@ public class GenBukkit implements CommandExecutor, Listener {
                     String genbukkitOption = player.getMetadata("genbukkitOption").get(0).asString();
                     if (genbukkitOption.equals("vertical")) {
                         Location clickedLocation = event.getClickedBlock().getLocation();
-                        for (int y = clickedLocation.getBlockY(); y <= clickedLocation.getWorld().getMaxHeight(); y++) {
-                            Location targetLocation = new Location(clickedLocation.getWorld(),
-                                    clickedLocation.getBlockX(), y, clickedLocation.getBlockZ());
-                            if (targetLocation.getBlock().getType() == Material.AIR) {
-                                targetLocation.getBlock().setType(Material.OBSIDIAN);
-                            } else {
-                                break;
-                            }
-                        }
-                        player.getInventory().getItemInMainHand().setType(Material.BUCKET);
+                        Bukkit.getScheduler().runTaskTimer(plugin, () -> generateVerticalObsidian(clickedLocation), 0L,
+                                20L);
                     } else if (genbukkitOption.equals("horizontal")) {
                         player.sendMessage(ChatColor.RED + "Horizontal GenBukkit is not implemented yet!");
                     }
@@ -143,5 +135,22 @@ public class GenBukkit implements CommandExecutor, Listener {
         menu.setItem(4, lavaBucketGenBukkitItem);
 
         player.openInventory(menu);
+    }
+
+    private void generateVerticalObsidian(Location location) {
+        int currentY = location.getBlockY();
+        int maxHeight = location.getWorld().getMaxHeight();
+
+        if (currentY > maxHeight) {
+            return;
+        }
+
+        Location targetLocation = new Location(location.getWorld(), location.getBlockX(), currentY,
+                location.getBlockZ());
+        if (targetLocation.getBlock().getType() == Material.AIR) {
+            targetLocation.getBlock().setType(Material.OBSIDIAN);
+        }
+
+        currentY++;
     }
 }

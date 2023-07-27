@@ -1,6 +1,7 @@
 package com.nate.elemental.commands.items;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,7 +26,7 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be executed by players.");
+            sender.sendMessage(ChatColor.RED + "This command can only be executed by players.");
             return true;
         }
 
@@ -41,9 +42,10 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
             Player targetPlayer = Bukkit.getPlayer(args[0]);
             if (targetPlayer != null && targetPlayer.isOnline()) {
                 giveTrenchPickaxe(targetPlayer, 3, -1); // Default size is 3x3, infinite uses
-                player.sendMessage("§aYou gave a §6Trench Pickaxe §e⛏️ §ato " + targetPlayer.getName());
+                player.sendMessage(ChatColor.GREEN + "You gave a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
+                        + ChatColor.YELLOW + " to " + targetPlayer.getName());
             } else {
-                player.sendMessage("§cPlayer not found or offline.");
+                player.sendMessage(ChatColor.RED + "Player not found or offline.");
             }
             return true;
         }
@@ -55,11 +57,12 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
             try {
                 size = Integer.parseInt(args[0]);
                 if (size != 3 && size != 5 && size != 10) {
-                    player.sendMessage("Invalid size argument. The size must be 3, 5, or 10.");
+                    player.sendMessage(ChatColor.RED + "Invalid size argument. The size must be 3, 5, or 10.");
                     return true;
                 }
             } catch (NumberFormatException e) {
-                player.sendMessage("Invalid size argument. Please provide a valid number (3, 5, or 10).");
+                player.sendMessage(
+                        ChatColor.RED + "Invalid size argument. Please provide a valid number (3, 5, or 10).");
                 return true;
             }
 
@@ -67,11 +70,13 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
                 try {
                     uses = Integer.parseInt(args[1]);
                     if (uses <= 0) {
-                        player.sendMessage("Invalid uses argument. The number of uses must be greater than 0.");
+                        player.sendMessage(
+                                ChatColor.RED + "Invalid uses argument. The number of uses must be greater than 0.");
                         return true;
                     }
                 } catch (NumberFormatException e) {
-                    player.sendMessage("Invalid uses argument. Please provide a valid number greater than 0.");
+                    player.sendMessage(
+                            ChatColor.RED + "Invalid uses argument. Please provide a valid number greater than 0.");
                     return true;
                 }
             }
@@ -85,19 +90,24 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
     private void giveTrenchPickaxe(Player player, int size, int uses) {
         ItemStack trenchPickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
         ItemMeta meta = trenchPickaxe.getItemMeta();
-        meta.setDisplayName("§6Trench Pickaxe §e⛏️");
-        meta.setLore(Arrays.asList("§7Size: §e" + size + "x" + size,
-                "§7Uses: " + (uses == -1 ? "§eInfinite" : "§e" + uses)));
+        meta.setDisplayName(ChatColor.GOLD + "Trench Pickaxe ⛏️");
+        meta.setLore(Arrays.asList(ChatColor.GRAY + "Size: " + ChatColor.YELLOW + size + "x" + size,
+                ChatColor.GRAY + "Uses: "
+                        + (uses == -1 ? ChatColor.YELLOW + "Infinite" : ChatColor.YELLOW + "" + uses)));
         trenchPickaxe.setItemMeta(meta);
 
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(trenchPickaxe);
-            player.sendMessage("§aYou received a §6Trench Pickaxe §e⛏️§a with size §e" + size + "x" + size +
-                    (uses == -1 ? "§a (Infinite uses)." : "§a and §e" + uses + "§a uses."));
+            player.sendMessage(ChatColor.GREEN + "You received a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
+                    + ChatColor.GREEN + " with size " + ChatColor.YELLOW + size + "x" + size +
+                    (uses == -1 ? ChatColor.GREEN + " (Infinite uses)."
+                            : ChatColor.GREEN + " and " + ChatColor.YELLOW + uses + ChatColor.GREEN + " uses."));
         } else {
             player.getWorld().dropItemNaturally(player.getLocation(), trenchPickaxe);
-            player.sendMessage("§aYou received a §6Trench Pickaxe §e⛏️§a with size §e" + size + "x" + size +
-                    (uses == -1 ? "§a (Infinite uses)." : "§a and §e" + uses + "§a uses."));
+            player.sendMessage(ChatColor.GREEN + "You received a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
+                    + ChatColor.GREEN + " with size " + ChatColor.YELLOW + size + "x" + size +
+                    (uses == -1 ? ChatColor.GREEN + " (Infinite uses)."
+                            : ChatColor.GREEN + " and " + ChatColor.YELLOW + uses + ChatColor.GREEN + " uses."));
         }
     }
 
@@ -121,14 +131,15 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand != null && itemInHand.getType() == Material.DIAMOND_PICKAXE
                 && itemInHand.getItemMeta() != null
-                && itemInHand.getItemMeta().getDisplayName().equals("§6Trench Pickaxe §e⛏️")) {
+                && itemInHand.getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Trench Pickaxe ⛏️")) {
 
             ItemMeta meta = itemInHand.getItemMeta();
             if (meta.hasLore()) {
                 List<String> lore = meta.getLore();
                 for (String line : lore) {
-                    if (line.startsWith("§7Size: ")) {
-                        int size = Integer.parseInt(line.substring(7).split("x")[0]);
+                    if (line.startsWith(ChatColor.GRAY + "Size: ")) {
+                        String sizeStr = ChatColor.stripColor(line.substring(7).split("x")[0]);
+                        int size = Integer.parseInt(sizeStr);
                         mineArea(player, event.getBlock().getLocation(), size);
                         break;
                     }
