@@ -33,15 +33,14 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            giveTrenchPickaxe(player, 3, -1); // Default size is 3x3, infinite uses
+            giveTrenchPickaxe(player, 3, -1);
             return true;
         }
 
         if (args.length == 1) {
-            // Check if the argument is a player name
             Player targetPlayer = Bukkit.getPlayer(args[0]);
             if (targetPlayer != null && targetPlayer.isOnline()) {
-                giveTrenchPickaxe(targetPlayer, 3, -1); // Default size is 3x3, infinite uses
+                giveTrenchPickaxe(targetPlayer, 3, -1);
                 player.sendMessage(ChatColor.GREEN + "You gave a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
                         + ChatColor.YELLOW + " to " + targetPlayer.getName());
             } else {
@@ -50,8 +49,8 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
             return true;
         }
 
-        int size = 3; // Default size is 3x3
-        int uses = -1; // -1 means infinite uses
+        int size = 3;
+        int uses = -1;
 
         if (args.length >= 1) {
             try {
@@ -145,6 +144,19 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
                     }
                 }
             }
+            if (meta.hasLore()) {
+                List<String> lore = meta.getLore();
+                for (String line : lore) {
+                    System.out.println("Lore Line: " + line);
+                    if (line.startsWith(ChatColor.GRAY + "Size: ")) {
+                        String sizeStr = ChatColor.stripColor(line.substring(7).split("x")[0]).trim();
+                        int size = Integer.parseInt(sizeStr);
+                        mineArea(player, event.getBlock().getLocation(), size);
+                        break;
+                    }
+                }
+            }
+
         }
     }
 }
