@@ -62,7 +62,6 @@ public class QuestCommand implements CommandExecutor, Listener {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.YELLOW + quest.getName());
 
-            // Set the lore for the quest item
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GRAY + "Reward: ");
             if (quest.getItemReward() != null) {
