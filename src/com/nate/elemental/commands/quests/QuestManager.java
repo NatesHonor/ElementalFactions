@@ -29,11 +29,11 @@ public class QuestManager {
                 ConfigurationSection questsSection = config.getConfigurationSection("quests");
                 for (String questName : questsSection.getKeys(false)) {
                     ConfigurationSection questSection = questsSection.getConfigurationSection(questName);
-                    String meta = questSection.getString("meta");
+                    List<String> lore = questSection.getStringList("meta"); // Parse as List<String>
                     ItemStack itemReward = questSection.getItemStack("itemReward");
                     double moneyReward = questSection.getDouble("moneyReward");
                     int expReward = questSection.getInt("expReward");
-                    Quest quest = new Quest(questName, meta, itemReward, moneyReward, expReward);
+                    Quest quest = new Quest(questName, lore, itemReward, moneyReward, expReward);
                     quests.add(quest);
                 }
             }
@@ -58,5 +58,10 @@ public class QuestManager {
             }
         }
         return null;
+    }
+
+    public void reloadQuests() {
+        quests.clear();
+        loadQuests();
     }
 }

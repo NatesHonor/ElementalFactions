@@ -2,16 +2,18 @@ package com.nate.elemental.commands.quests;
 
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class Quest {
     private String name;
-    private String meta;
+    private List<String> lore; // Change meta to List<String> for the lore
     private ItemStack itemReward;
     private double moneyReward;
     private int expReward;
 
-    public Quest(String name, String meta, ItemStack itemReward, double moneyReward, int expReward) {
+    public Quest(String name, List<String> lore, ItemStack itemReward, double moneyReward, int expReward) {
         this.name = name;
-        this.meta = meta;
+        this.lore = lore;
         this.itemReward = itemReward;
         this.moneyReward = moneyReward;
         this.expReward = expReward;
@@ -21,8 +23,8 @@ public class Quest {
         return name;
     }
 
-    public String getMeta() {
-        return meta;
+    public List<String> getLore() { // Add getLore method to retrieve the lore
+        return lore;
     }
 
     public ItemStack getItemReward() {

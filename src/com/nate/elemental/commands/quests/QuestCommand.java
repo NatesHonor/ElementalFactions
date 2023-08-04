@@ -1,5 +1,9 @@
 package com.nate.elemental.commands.quests;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,10 +17,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class QuestCommand implements CommandExecutor, Listener {
     private QuestManager questManager = new QuestManager();
@@ -32,9 +32,22 @@ public class QuestCommand implements CommandExecutor, Listener {
         Player player = (Player) sender;
 
         if (label.equalsIgnoreCase("quest")) {
-            openQuestGUI(player);
-            return true;
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+                if (!player.hasPermission("quests.reload")) {
+                    player.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                    return true;
+                }
+
+                player.sendMessage(ChatColor.YELLOW + "Refreshing quests.yml...");
+                questManager.reloadQuests();
+                player.sendMessage(ChatColor.GREEN + "Quests reloaded successfully.");
+                return true;
+            } else {
+                openQuestGUI(player);
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -47,6 +60,10 @@ public class QuestCommand implements CommandExecutor, Listener {
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.YELLOW + quest.getName());
+            List<String> lore = quest.getLore();
+            if (lore != null) {
+                meta.setLore(lore);
+            }
             item.setItemMeta(meta);
             gui.setItem(i, item);
         }
