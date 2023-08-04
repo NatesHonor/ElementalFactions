@@ -11,7 +11,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.nate.elemental.commands.factions.AcceptCommand;
 import com.nate.elemental.commands.factions.AllyCommand;
-import com.nate.elemental.commands.factions.ClaimCommand;
 import com.nate.elemental.commands.factions.CreateFactionCommand;
 import com.nate.elemental.commands.factions.DescCommand;
 import com.nate.elemental.commands.factions.DisbandCommand;
@@ -122,12 +121,6 @@ public class Main implements CommandExecutor {
                             disbandCommand.onCommand(sender, command, label, args);
                         } else {
                             sender.sendMessage(getMessage("usage.disband", "&cUsage: /f disband"));
-                        }
-                        break;
-                    case "claim":
-                        if (args.length >= 1) {
-                            ClaimCommand claimCommand = new ClaimCommand();
-                            claimCommand.onCommand(sender, command, label, args);
                         }
                         break;
                     case "map":

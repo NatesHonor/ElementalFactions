@@ -11,9 +11,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/BuildTools/Spigot/Spigot-API/target/spigot-api-1.19.4-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="C:/Users/natha/Development/BuildTools/Spigot/Spigot-API/target/spigot-api-1.19.4-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="lib" path="C:/Users/natha/OneDrive/Documents/MCSS/servers/test- 1.20/plugins/Vault.jar"/>
-	<classpathentry kind="lib" path="C:/Users/natha/Downloads/Citizens-2.0.32-b3111.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
