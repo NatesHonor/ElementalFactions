@@ -1,5 +1,6 @@
 package com.nate.elemental.commands.quests;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,19 +61,30 @@ public class QuestCommand implements CommandExecutor, Listener {
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.YELLOW + quest.getName());
-            List<String> lore = quest.getLore();
-            if (lore != null) {
-                meta.setLore(lore);
+
+            // Set the lore for the quest item
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.GRAY + "Reward: ");
+            if (quest.getItemReward() != null) {
+                lore.add(ChatColor.GRAY + "- " + quest.getItemReward().getType().toString());
             }
+            if (quest.getMoneyReward() > 0) {
+                lore.add(ChatColor.GRAY + "- " + quest.getMoneyReward() + " coins");
+            }
+            if (quest.getExpReward() > 0) {
+                lore.add(ChatColor.GRAY + "- " + quest.getExpReward() + " XP");
+            }
+            meta.setLore(lore);
+
             item.setItemMeta(meta);
             gui.setItem(i, item);
         }
 
         ItemStack redWool = new ItemStack(Material.RED_WOOL);
         ItemMeta redWoolMeta = redWool.getItemMeta();
-        redWoolMeta.setDisplayName(ChatColor.RED + "Placeholder");
+        redWoolMeta.setDisplayName(ChatColor.RED + "No claimed quest");
         redWool.setItemMeta(redWoolMeta);
-        int[] centerSlots = { 47, 48, 49 };
+        int[] centerSlots = { 48, 49, 50 };
         for (int slot : centerSlots) {
             gui.setItem(slot, redWool);
         }
