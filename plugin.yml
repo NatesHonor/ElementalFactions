@@ -1,11 +1,17 @@
 name: ElementalFactions
-version: 4.1.6
+version: 4.2.4
 main: com.nate.elemental.Factions
 author: NatesHonor
 website: https://inate.xyz
 description: A Factions plugin Designed for Elemental Legacy
 api-version: 1.17
 commands:
+  quest:
+    description: Quest command
+    usage: /quest
+  quests:
+    description: Quest command
+    usage: /quests
   f:
     description: Default factions command
     usage: /f help

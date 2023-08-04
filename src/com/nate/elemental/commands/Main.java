@@ -132,8 +132,7 @@ public class Main implements CommandExecutor {
                         break;
                     case "map":
                         if (args.length >= 1) {
-                            Database database = new Database();
-                            MapCommand mapCommand = new MapCommand(database);
+                            MapCommand mapCommand = new MapCommand();
                             mapCommand.onCommand(sender, command, label, args);
                         }
                         break;

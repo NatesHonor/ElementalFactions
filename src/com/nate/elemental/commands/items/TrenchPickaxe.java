@@ -57,7 +57,7 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
             Player targetPlayer = Bukkit.getPlayer(args[1]);
             if (targetPlayer != null && targetPlayer.isOnline()) {
                 giveTrenchPickaxe(targetPlayer);
-                player.sendMessage(ChatColor.GREEN + "You gave a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
+                player.sendMessage(ChatColor.GREEN + "You gave a " + ChatColor.GOLD + "Trench Pickaxe"
                         + ChatColor.YELLOW + " to " + targetPlayer.getName());
             } else {
                 player.sendMessage(ChatColor.RED + "Player not found or offline.");
@@ -72,18 +72,18 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
     private void giveTrenchPickaxe(Player player) {
         ItemStack trenchPickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
         ItemMeta meta = trenchPickaxe.getItemMeta();
-        meta.setDisplayName(ChatColor.GOLD + "Trench Pickaxe ⛏️");
+        meta.setDisplayName(ChatColor.GOLD + "Trench Pickaxe");
         meta.setLore(Arrays.asList(ChatColor.GRAY + "Size: " + ChatColor.YELLOW + "3x3",
                 ChatColor.GRAY + "Uses: " + ChatColor.YELLOW + "Infinite"));
         trenchPickaxe.setItemMeta(meta);
 
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(trenchPickaxe);
-            player.sendMessage(ChatColor.GREEN + "You received a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
+            player.sendMessage(ChatColor.GREEN + "You received a " + ChatColor.GOLD + "Trench Pickaxe"
                     + ChatColor.GREEN + " with size 3x3" + ChatColor.GREEN + " (Infinite uses).");
         } else {
             player.getWorld().dropItemNaturally(player.getLocation(), trenchPickaxe);
-            player.sendMessage(ChatColor.GREEN + "You received a " + ChatColor.GOLD + "Trench Pickaxe ⛏️"
+            player.sendMessage(ChatColor.GREEN + "You received a " + ChatColor.GOLD + "Trench Pickaxe"
                     + ChatColor.GREEN + " with size 3x3" + ChatColor.GREEN + " (Infinite uses).");
         }
     }
@@ -95,7 +95,7 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
         if (itemInHand != null && itemInHand.getType() == Material.DIAMOND_PICKAXE
                 && itemInHand.getItemMeta() != null
                 && itemInHand.getItemMeta().getDisplayName() != null
-                && itemInHand.getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Trench Pickaxe ⛏️")) {
+                && itemInHand.getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Trench Pickaxe")) {
 
             ItemMeta meta = itemInHand.getItemMeta();
             if (meta.hasLore()) {

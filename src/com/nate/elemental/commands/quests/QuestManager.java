@@ -21,9 +21,8 @@ public class QuestManager {
     }
 
     private void loadQuests() {
-        // Load quests from the quests.yml file
-        // You can use YamlConfiguration to parse the quests.yml and populate the quests
-        // list
+
+        createQuestsFile();
         File questsFile = new File(factions.getDataFolder().getAbsolutePath() + "quests.yml");
         if (questsFile.exists()) {
             FileConfiguration config = YamlConfiguration.loadConfiguration(questsFile);
@@ -35,12 +34,17 @@ public class QuestManager {
                     ItemStack itemReward = questSection.getItemStack("itemReward");
                     double moneyReward = questSection.getDouble("moneyReward");
                     int expReward = questSection.getInt("expReward");
-
-                    // Create a new Quest object and add it to the quests list
                     Quest quest = new Quest(questName, meta, itemReward, moneyReward, expReward);
                     quests.add(quest);
                 }
             }
+        }
+    }
+
+    private void createQuestsFile() {
+        File questsFile = new File(factions.getDataFolder(), "quests.yml");
+        if (!questsFile.exists()) {
+            factions.saveResource("quests.yml", false);
         }
     }
 

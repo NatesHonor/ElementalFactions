@@ -3,7 +3,6 @@ package com.nate.elemental.utils.registration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nate.elemental.commands.factions.ClaimCommand;
 import com.nate.elemental.commands.factions.CreateFactionCommand;
 import com.nate.elemental.commands.factions.DescCommand;
 import com.nate.elemental.commands.factions.DisbandCommand;
@@ -38,7 +37,6 @@ public class RegisterEvents {
         Bukkit.getPluginManager().registerEvents(new TrenchPickaxe(), plugin);
         Bukkit.getPluginManager().registerEvents(new GenBukkit(), plugin);
         Bukkit.getPluginManager().registerEvents(new FireballItem(plugin, true), plugin);
-        Bukkit.getPluginManager().registerEvents(new ClaimCommand(), plugin);
         Bukkit.getPluginManager().registerEvents(new SettingsCommand(), plugin);
         Bukkit.getPluginManager().registerEvents(new CombatTagHandler(), plugin);
         Bukkit.getPluginManager().registerEvents(new PearlCooldownHandler(), plugin);
