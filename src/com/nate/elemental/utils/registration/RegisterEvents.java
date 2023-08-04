@@ -1,6 +1,7 @@
 package com.nate.elemental.utils.registration;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.nate.elemental.commands.factions.CreateFactionCommand;
@@ -13,6 +14,7 @@ import com.nate.elemental.commands.factions.PromoteCommand;
 import com.nate.elemental.commands.factions.SettingsCommand;
 import com.nate.elemental.commands.factions.ShowCommand;
 import com.nate.elemental.commands.items.TrenchPickaxe;
+import com.nate.elemental.commands.quests.QuestCommand;
 import com.nate.elemental.commands.shops.ElixirCommand;
 import com.nate.elemental.commands.shops.GenBukkit;
 import com.nate.elemental.commands.shops.HorseCommand;
@@ -51,8 +53,13 @@ public class RegisterEvents {
         Bukkit.getPluginManager().registerEvents(new InviteCommand(), plugin);
         Bukkit.getPluginManager().registerEvents(new ListFactions(), plugin);
         Bukkit.getPluginManager().registerEvents(new MapCommand(), plugin);
-        Bukkit.getPluginManager().registerEvents(new PromoteCommand(new Database()), plugin);
-        Bukkit.getPluginManager().registerEvents(new ShowCommand(), plugin);
+        registerEvent(new PromoteCommand(new Database()), plugin);
+        registerEvent(new ShowCommand(), plugin);
 
+        registerEvent(new QuestCommand(), plugin);
+    }
+
+    private static void registerEvent(Listener string, JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(string, plugin);
     }
 }

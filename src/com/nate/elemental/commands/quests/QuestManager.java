@@ -21,9 +21,8 @@ public class QuestManager {
     }
 
     private void loadQuests() {
-
         createQuestsFile();
-        File questsFile = new File(factions.getDataFolder().getAbsolutePath() + "quests.yml");
+        File questsFile = new File(factions.getDataFolder(), "quests.yml");
         if (questsFile.exists()) {
             FileConfiguration config = YamlConfiguration.loadConfiguration(questsFile);
             if (config.isConfigurationSection("quests")) {
