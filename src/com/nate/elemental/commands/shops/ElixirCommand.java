@@ -54,13 +54,14 @@ public class ElixirCommand implements CommandExecutor, Listener {
 
         List<Elixir> elixirs = elixirConfig.getElixirs();
         for (Elixir elixir : elixirs) {
-            addCustomElixir(inventory, Material.POTION, elixir.getName(), elixir.getEffects());
+            addCustomElixir(inventory, Material.POTION, elixir.getName(), elixir.getEffects(), elixir.getCost());
         }
 
         return inventory;
     }
 
-    private void addCustomElixir(Inventory inventory, Material material, String name, List<PotionEffect> effects) {
+    private void addCustomElixir(Inventory inventory, Material material, String name, List<PotionEffect> effects,
+            int cost) {
         ItemStack elixir = new ItemStack(material);
         PotionMeta potionMeta = (PotionMeta) elixir.getItemMeta();
 
@@ -72,6 +73,11 @@ public class ElixirCommand implements CommandExecutor, Listener {
 
         ItemMeta itemMeta = elixir.getItemMeta();
         itemMeta.setDisplayName(name);
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.YELLOW + "Cost: " + cost);
+        itemMeta.setLore(lore);
+
         elixir.setItemMeta(itemMeta);
 
         inventory.addItem(elixir);

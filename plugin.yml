@@ -36,6 +36,36 @@ commands:
   f invite:
     description: Shows information on a faction
     usage: /f show <faction> (optional)
+  guild:
+    description: Default factions command
+    usage: /guild help
+  guild help:
+    description: Displays the help messages
+    usage: /guild help
+  guild show:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
+  guild create:
+    description: Creates a new faction
+    usage: /guild create <faction>
+  guild desc:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
+  guild accept:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
+  guild ally:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
+  guild claim:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
+  guild enemy:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
+  guild invite:
+    description: Shows information on a faction
+    usage: /guild show <faction> (optional)
   horse: 
     description: Opens the Horse GUI
     usage: /horse

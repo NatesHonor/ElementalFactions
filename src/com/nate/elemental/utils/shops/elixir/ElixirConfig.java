@@ -37,6 +37,7 @@ public class ElixirConfig {
                 if (elixirSection != null) {
                     String name = ChatColor.translateAlternateColorCodes('&', elixirSection.getString("name"));
                     List<String> effects = elixirSection.getStringList("effects");
+                    int cost = elixirSection.getInt("cost", 0);
                     if (name != null && effects != null) {
                         List<PotionEffect> parsedEffects = new ArrayList<>();
                         for (String effectString : effects) {
@@ -45,7 +46,7 @@ public class ElixirConfig {
                                 parsedEffects.add(effect);
                             }
                         }
-                        elixirs.add(new Elixir(name, parsedEffects));
+                        elixirs.add(new Elixir(name, parsedEffects, cost));
                     } else {
                         plugin.getLogger().warning("Invalid elixir: " + key);
                     }
@@ -80,6 +81,7 @@ public class ElixirConfig {
         }
         ConfigurationSection elixirSection = section.createSection(elixir.getName());
         elixirSection.set("name", elixir.getName());
+        elixirSection.set("cost", elixir.getCost());
         List<String> effects = new ArrayList<>();
         for (PotionEffect effect : elixir.getEffects()) {
             String effectString = effect.getType().getName() + ":" + (effect.getAmplifier() + 1) + ":"
@@ -99,10 +101,12 @@ public class ElixirConfig {
     public static class Elixir {
         private final String name;
         private final List<PotionEffect> effects;
+        private final int cost;
 
-        public Elixir(String name, List<PotionEffect> effects) {
+        public Elixir(String name, List<PotionEffect> effects, int cost) {
             this.name = ChatColor.translateAlternateColorCodes('&', name);
             this.effects = effects;
+            this.cost = cost;
         }
 
         public String getName() {
@@ -112,5 +116,10 @@ public class ElixirConfig {
         public List<PotionEffect> getEffects() {
             return effects;
         }
+
+        public int getCost() {
+            return cost;
+        }
     }
+
 }

@@ -22,6 +22,50 @@ public class Chunkutils {
         }
     }
 
+    public String getFactionNameByChunk(String chunkKey) {
+        try (Connection connection = DatabaseConnection.getConnection();
+                PreparedStatement statement = connection
+                        .prepareStatement("SELECT faction_name FROM claimed_chunks WHERE chunk_key = ?")) {
+            statement.setString(1, chunkKey);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("faction_name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isChunkClaimed(String chunkKey) {
+        try (Connection connection = DatabaseConnection.getConnection();
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS count FROM claimed_chunks WHERE chunk_key = ?")) {
+            statement.setString(1, chunkKey);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt("count");
+                resultSet.close();
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void claimChunk(String factionName, String chunkKey) {
+        try (Connection connection = DatabaseConnection.getConnection();
+                PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO claimed_chunks (faction_name, chunk_key) VALUES (?, ?)")) {
+            statement.setString(1, factionName);
+            statement.setString(2, chunkKey);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isAutoClaiming(Player player) {
         String playerName = player.getName();
         try (Connection connection = DatabaseConnection.getConnection();

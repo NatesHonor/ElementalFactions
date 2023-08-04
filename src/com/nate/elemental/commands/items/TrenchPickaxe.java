@@ -103,6 +103,7 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
                     if (line.startsWith(ChatColor.GRAY + "Size: ")) {
                         String sizeStr = ChatColor.stripColor(line.substring(7)).trim();
                         int size = Integer.parseInt(sizeStr);
+                        event.setCancelled(true); // Cancel the original block break event
                         mineArea(player, event.getBlock().getLocation(), size);
                         break;
                     }
@@ -118,7 +119,7 @@ public class TrenchPickaxe implements CommandExecutor, Listener {
                 for (int z = -halfSize; z <= halfSize; z++) {
                     Block block = location.clone().add(x, y, z).getBlock();
                     if (block.getType() != Material.BEDROCK) {
-                        block.breakNaturally();
+                        block.breakNaturally(); // Use breakNaturally safely since the event is already cancelled
                     }
                 }
             }

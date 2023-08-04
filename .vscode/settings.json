@@ -3,17 +3,25 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms100m -Xlog:disable",
     "cSpell.words": [
+        "addusers",
+        "allyinvites",
         "Bukkits",
         "Chunkutils",
+        "coleader",
         "Cooldown",
+        "enemied",
         "gameplay",
         "genbukkit",
+        "getusers",
         "jdbc",
+        "playername",
         "raidshop",
         "Safezone",
+        "setusers",
         "spawnershop",
         "trenchpickaxe",
         "UNLUCK",
+        "updateusers",
         "Warzone"
     ]
 }

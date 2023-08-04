@@ -43,7 +43,7 @@ public class ClaimCommand implements CommandExecutor, Listener {
         Chunk chunk = player.getLocation().getChunk();
         String chunkKey = getChunkKey(chunk);
 
-        if (database.isChunkClaimed(chunkKey)) {
+        if (chunkutils.isChunkClaimed(chunkKey)) {
             player.sendMessage(ChatColor.RED + "This chunk is already claimed by another faction.");
             return true;
         }
@@ -67,7 +67,7 @@ public class ClaimCommand implements CommandExecutor, Listener {
 
         chunkutils.updateAvailableChunksForFaction(factionName, availableChunks - requiredChunks);
 
-        database.claimChunk(factionName, chunkKey);
+        chunkutils.claimChunk(factionName, chunkKey);
 
         player.sendMessage(ChatColor.GREEN + "Chunk claimed successfully.");
 
@@ -104,8 +104,8 @@ public class ClaimCommand implements CommandExecutor, Listener {
         String fromChunkKey = getChunkKey(fromChunk);
         String toChunkKey = getChunkKey(toChunk);
 
-        String fromFaction = database.getFactionNameByChunk(fromChunkKey);
-        String toFaction = database.getFactionNameByChunk(toChunkKey);
+        String fromFaction = chunkutils.getFactionNameByChunk(fromChunkKey);
+        String toFaction = chunkutils.getFactionNameByChunk(toChunkKey);
 
         if (fromFaction == null && toFaction != null) {
             displayFactionInformation(player, toFaction);
@@ -120,19 +120,26 @@ public class ClaimCommand implements CommandExecutor, Listener {
         if (chunkutils.isAutoClaiming(player)) {
             String chunkKey = getChunkKey(toChunk);
 
-            if (!database.isChunkClaimed(chunkKey)) {
+            if (!chunkutils.isChunkClaimed(chunkKey)) {
                 String factionName = database.getUserFactionName(player.getName());
                 int availableChunks = chunkutils.getAvailableChunksForFaction(factionName);
 
                 if (availableChunks > 0) {
-                    database.claimChunk(factionName, chunkKey);
+                    chunkutils.claimChunk(factionName, chunkKey);
                     chunkutils.updateAvailableChunksForFaction(factionName, availableChunks - 1);
                     player.sendMessage(ChatColor.GREEN + "Auto claim: Chunk claimed successfully.");
                 } else {
                     player.sendMessage(ChatColor.RED + "Auto claim: You don't have enough chunks to claim this land.");
                     chunkutils.setAutoClaiming(player, false);
                 }
+            } else {
+                // Handle the case when the chunk is already claimed by another faction
+                String claimingFaction = chunkutils.getFactionNameByChunk(chunkKey);
+                player.sendMessage(
+                        ChatColor.RED + "Auto claim: This land is already claimed by the faction: " + claimingFaction);
+                chunkutils.setAutoClaiming(player, false);
             }
         }
+
     }
 }

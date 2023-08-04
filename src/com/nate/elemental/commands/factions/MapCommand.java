@@ -8,19 +8,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import com.nate.elemental.utils.storage.h2.Chunkutils;
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.FactionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapCommand implements CommandExecutor, Listener {
-    private final Database database;
+    Database database = new Database();
+    Chunkutils chunkUtils = new Chunkutils();
+    FactionUtils factionUtils = new FactionUtils();
     private final int chunkSizeX = 16;
     private final int chunkSizeZ = 10;
-
-    public MapCommand(Database database) {
-        this.database = database;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -49,8 +49,8 @@ public class MapCommand implements CommandExecutor, Listener {
                 Chunk chunk = player.getWorld().getChunkAt(x, z);
                 String chunkKey = getChunkKey(chunk);
 
-                if (database.isChunkClaimed(chunkKey)) {
-                    String factionName = database.getFactionNameByChunk(chunkKey);
+                if (chunkUtils.isChunkClaimed(chunkKey)) {
+                    String factionName = chunkUtils.getFactionNameByChunk(chunkKey);
                     char factionChar = getFactionChar(factionName);
 
                     if (!factionColors.containsKey(factionName)) {
@@ -78,7 +78,7 @@ public class MapCommand implements CommandExecutor, Listener {
         player.sendMessage(mapBuilder.toString());
 
         // Display faction key based on currently displayed faction
-        String displayedFactionName = database.getFactionNameByChunk(getChunkKey(player.getLocation().getChunk()));
+        String displayedFactionName = chunkUtils.getFactionNameByChunk(getChunkKey(player.getLocation().getChunk()));
         if (displayedFactionName != null) {
             player.sendMessage(ChatColor.YELLOW + "Faction Key:");
             for (String factionName : factionColors.keySet()) {

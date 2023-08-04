@@ -11,7 +11,8 @@ import com.nate.elemental.utils.storage.h2.Database;
 import com.nate.elemental.utils.storage.h2.FactionUtils;
 
 public class AllyCommand implements CommandExecutor {
-    private final Database database;
+    Database database = new Database();
+    FactionUtils factionUtils = new FactionUtils();
 
     public AllyCommand() {
         this.database = new Database();
@@ -29,32 +30,34 @@ public class AllyCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Usage: /f ally <faction>");
             return true;
         }
-        
+
         if (args.length > 2) {
-        	if (args[1].contains("accept")) {
-        	        String factionName = database.getUserFactionName(player.getName());
-        	        String requestingFaction = args[2];
+            if (args[1].contains("accept")) {
+                String factionName = database.getUserFactionName(player.getName());
+                String requestingFaction = args[2];
 
-        	        if (!FactionUtils.factionExists(requestingFaction)) {
-        	            player.sendMessage(ChatColor.RED + "The requesting faction does not exist.");
-        	            return true;
-        	        }
+                if (!FactionUtils.factionExists(requestingFaction)) {
+                    player.sendMessage(ChatColor.RED + "The requesting faction does not exist.");
+                    return true;
+                }
 
-        	        String allianceRequestKey = requestingFaction + "_" + factionName;
-        	        if (!FactionUtils.hasPendingInvite(allianceRequestKey)) {
-        	            player.sendMessage(ChatColor.RED + "Your faction has not received an alliance request from the specified faction.");
-        	            return true;
-        	        }
+                String allianceRequestKey = requestingFaction + "_" + factionName;
+                if (!FactionUtils.hasPendingInvite(allianceRequestKey)) {
+                    player.sendMessage(ChatColor.RED
+                            + "Your faction has not received an alliance request from the specified faction.");
+                    return true;
+                }
 
-        	        FactionUtils.addAlly(factionName, requestingFaction);
-        	        FactionUtils.addAlly(requestingFaction, factionName);
-        	        FactionUtils.removeInvite(allianceRequestKey);
+                FactionUtils.addAlly(factionName, requestingFaction);
+                FactionUtils.addAlly(requestingFaction, factionName);
+                FactionUtils.removeInvite(allianceRequestKey);
 
-        	        Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.DARK_RED + factionName + " has allied " + requestingFaction + "!");
+                Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.DARK_RED + factionName + " has allied "
+                        + requestingFaction + "!");
 
-        	        return true;
-        	    }
-        	}
+                return true;
+            }
+        }
 
         String factionName = database.getUserFactionName(player.getName());
         String targetFaction = args[1];
@@ -74,23 +77,27 @@ public class AllyCommand implements CommandExecutor {
             return true;
         }
 
-        Player leader = Bukkit.getPlayer(database.getFactionLeader(targetFaction));
+        Player leader = Bukkit.getPlayer(factionUtils.getFactionLeader(targetFaction));
         if (leader == null || !leader.isOnline()) {
-            player.sendMessage(ChatColor.RED + "The leader of the targeted faction needs to be online to accept the alliance request.");
+            player.sendMessage(ChatColor.RED
+                    + "The leader of the targeted faction needs to be online to accept the alliance request.");
             return true;
         }
 
         String allianceRequestKey = factionName + "_" + targetFaction;
         if (FactionUtils.hasPendingInvite(allianceRequestKey)) {
-            player.sendMessage(ChatColor.RED + "An alliance request has already been sent to the targeted faction. Please wait for a response.");
+            player.sendMessage(ChatColor.RED
+                    + "An alliance request has already been sent to the targeted faction. Please wait for a response.");
             return true;
         }
 
         FactionUtils.addInvite(allianceRequestKey, factionName, targetFaction);
-        leader.sendMessage(ChatColor.YELLOW + "The faction " + factionName + " wants to form an alliance with your faction.");
+        leader.sendMessage(
+                ChatColor.YELLOW + "The faction " + factionName + " wants to form an alliance with your faction.");
         leader.sendMessage(ChatColor.YELLOW + "To accept the alliance, use /f ally accept " + factionName);
 
-        player.sendMessage(ChatColor.GREEN + "Your alliance request has been sent to the leader of " + targetFaction + ".");
+        player.sendMessage(
+                ChatColor.GREEN + "Your alliance request has been sent to the leader of " + targetFaction + ".");
 
         return true;
     }

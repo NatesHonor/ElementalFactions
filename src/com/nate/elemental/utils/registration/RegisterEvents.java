@@ -52,7 +52,7 @@ public class RegisterEvents {
         Bukkit.getPluginManager().registerEvents(new DisbandCommand(), plugin);
         Bukkit.getPluginManager().registerEvents(new InviteCommand(), plugin);
         Bukkit.getPluginManager().registerEvents(new ListFactions(), plugin);
-        Bukkit.getPluginManager().registerEvents(new MapCommand(new Database()), plugin);
+        Bukkit.getPluginManager().registerEvents(new MapCommand(), plugin);
         Bukkit.getPluginManager().registerEvents(new PromoteCommand(new Database()), plugin);
         Bukkit.getPluginManager().registerEvents(new ShowCommand(), plugin);
 

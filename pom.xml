@@ -6,7 +6,7 @@
 
     <groupId>com.nate.elemental</groupId>
     <artifactId>Elemental-Factions</artifactId>
-    <version>4.1.7</version>
+    <version>4.2.1</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -46,7 +46,7 @@
         <sourceDirectory>src</sourceDirectory>
         <resources>
             <resource>
-                <directory>C:\Enterprise\ElementalLegacy\Plugins\ElementalFactions</directory>
+                <directory>C:\Users\natha\Development\ElementalLegacy\Plugins\ElementalFactions</directory>
                 <includes>
                     <include>*.yml</include>
                 </includes>

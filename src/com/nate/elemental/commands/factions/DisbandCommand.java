@@ -8,16 +8,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import com.nate.elemental.Factions;
 import com.nate.elemental.utils.storage.h2.Database;
+import com.nate.elemental.utils.storage.h2.FactionUtils;
 
 public class DisbandCommand implements CommandExecutor, Listener {
     private final Database database;
-    @SuppressWarnings("unused")
-    private Factions plugin;
+    FactionUtils factionUtils = new FactionUtils();
 
     public DisbandCommand() {
-        this.plugin = Factions.getInstance();
         this.database = new Database();
     }
 
@@ -38,14 +36,14 @@ public class DisbandCommand implements CommandExecutor, Listener {
             return true;
         }
 
-        String factionLeader = database.getFactionLeader(factionName);
+        String factionLeader = factionUtils.getFactionLeader(factionName);
         if (factionLeader == null || !factionLeader.equalsIgnoreCase(playerName)) {
             player.sendMessage(ChatColor.RED + "You are not allowed to disband your faction.");
             return true;
         }
 
         if (args.length > 1 && args[1].equalsIgnoreCase("confirm")) {
-            database.disbandFaction(factionName);
+            factionUtils.disbandFaction(factionName);
             database.updateusersFactionNoLeader(playerName, "wilderness");
 
             String message = ChatColor.RED + "The faction " + ChatColor.YELLOW + factionName + ChatColor.RED

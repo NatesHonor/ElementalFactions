@@ -49,7 +49,7 @@ public class ShowCommand implements CommandExecutor, Listener {
         double balance = database.getFactionBalance(factionName);
         int spawners = database.getFactionSpawners(factionName);
         int alliesCount = tableUtils.getFactionAlliesCount(factionName);
-        int totalMembers = database.getUsersInFactionCount(factionName);
+        int totalMembers = factionUtils.getUsersInFactionCount(factionName);
 
         int onlineMembers = 0;
         int offlineMembers = 0;
