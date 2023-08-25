@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.nate.elemental</groupId>
   <artifactId>Elemental-Factions</artifactId>
-  <version>4.3.5</version>
+  <version>4.3.6</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
