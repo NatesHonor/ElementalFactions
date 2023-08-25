@@ -95,7 +95,7 @@ public class Factions extends JavaPlugin implements Listener {
 
     public static String getConnectionURL() {
         if (url == null) {
-            url = "jdbc:h2:" + Factions.instance.getDataFolder().getAbsolutePath() + "\\Factions";
+            url = "jdbc:h2:" + Factions.instance.getDataFolder().getAbsolutePath() + "\\Factions;TRACE_LEVEL_FILE=0";
             ;
         }
         return url;

@@ -26,6 +26,7 @@ public class RegisterCommands {
 
         plugin.getCommand("guild").setExecutor(main);
         plugin.getCommand("quest").setExecutor(quest);
+        plugin.getCommand("quests").setExecutor(quest);
         plugin.getCommand("f").setExecutor(main);
         plugin.getCommand("horse").setExecutor(horseCommand);
         plugin.getCommand("elixir").setExecutor(elixirCommand);
